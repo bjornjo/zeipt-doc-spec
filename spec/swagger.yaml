@@ -1,7 +1,7 @@
 # This is an **example** API to demontstrate features of OpenAPI specification.
 # It doesn't cover all OpenAPI features. For more full example check out: https://github.com/APIs-guru/petstore_extended
 
-swagger: '2.0'
+swagger: "2.0"
 # You should specify common part of your endpoints in the following format:
 #   <schemes>://<host><basepath>
 schemes:
@@ -14,12 +14,14 @@ info:
   description: |
     This is an **example** API to demontstrate features of OpenAPI specification
     # Introduction
+    Hello.
+    
     This specification is intended to to be a good starting point for describint your API in 
     [OpenAPI/Swagger format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md).
     It also demonstrates features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo) tool and 
     [ReDoc](https://github.com/Rebilly/ReDoc) documentation engine. So beyond the standard OpenAPI syntax we use a few 
     [vendor extensions](https://github.com/Rebilly/ReDoc/blob/master/docs/redoc-vendor-extensions.md).
-    
+
     # OpenAPI Specification
     The goal of The OpenAPI Specification is to define a standard, language-agnostic interface to REST APIs which
     allows both humans and computers to discover and understand the capabilities of the service without access to source
@@ -27,25 +29,25 @@ info:
     understand and interact with the remote service with a minimal amount of implementation logic. Similar to what
     interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
 
-  version: '1.0.0' # Your API version
+  version: "1.0.0" # Your API version
   # It can be any string but it is better to use semantic versioning: http://semver.org/
   # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
 
   title: Example.com # Replace with your API title
   # Keep it simple. Don't add "API" or verison at the end of the string.
 
-  termsOfService: 'https://example.com/terms/' # [Optional] Replace with an URL to your ToS
+  termsOfService: "https://example.com/terms/" # [Optional] Replace with an URL to your ToS
   contact:
     email: contact@example.com # [Optional] Replace with your contact email
-    url: 'http://example.com/contact' # [Optional] Replace with link to your contact form
+    url: "http://example.com/contact" # [Optional] Replace with link to your contact form
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
   x-logo:
-    url: 'https://apis.guru/openapi-template/logo.png'
+    url: "logo.png"
 externalDocs:
   description: Find out how to create Github repo for your OpenAPI spec.
-  url: 'https://github.com/Rebilly/generator-openapi-repo'
+  url: "https://github.com/Rebilly/generator-openapi-repo"
 produces:
   # List of mime types your API endpoins can return.
   # This is a global default. You can OVERWRITE it in each specific operation.
@@ -74,11 +76,11 @@ securityDefinitions:
   main_auth: # security definition name (you can name it as you want)
     type: oauth2 # authorization type, one of: oauth2, basic, apiKey
     # the following options are specific to oauth2 type
-    authorizationUrl: 'http://example.com/api/oauth/dialog'
+    authorizationUrl: "http://example.com/api/oauth/dialog"
     flow: implicit
     scopes:
-      'read:users': read users info
-      'write:users': modify or remove users
+      "read:users": read users info
+      "write:users": modify or remove users
   api_key: # security definition name (you can name it as you want)
     type: apiKey
     # The following options are specific to apiKey type
@@ -88,11 +90,11 @@ securityDefinitions:
     type: basic
 
 # Holds the relative paths to the individual endpoints. The path is appended to the
-# basePath in order to construct the full URL. 
+# basePath in order to construct the full URL.
 paths:
-  '/users/{username}': # path parameter in curly braces
+  "/users/{username}": # path parameter in curly braces
     # documentation for GET operation for this path
-    
+
     # parameters list that are used with each operation for this path
     parameters:
       - name: pretty_print
@@ -103,51 +105,51 @@ paths:
     get:
       tags:
         - User
-      
+
       # summary is up to 120 symbold but we recommend to be shortest as possible
       summary: Get user by user name
-      
+
       # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
-      description: | 
+      description: |
         Some description of the operation. 
         You can use `markdown` here.
-      
+
       # operationId should be unique across the whole specification
       operationId: getUserByName
-      
+
       # list of parameters for the operation
       parameters:
         - name: username
           in: path
-          description: 'The name that needs to be fetched'
+          description: "The name that needs to be fetched"
           required: true
           type: string
         - name: with_email
           in: query
           description: Filter users without email
           type: boolean
-      
+
       # security schemas applied to this operation
       security:
         - main_auth:
-          - 'read:users' # for auth2 provide list of scopes here
+            - "read:users" # for auth2 provide list of scopes here
         - api_key: []
       # overwriting default global produces
       produces:
         - application/json
       responses: # list of responses
-        '200':
+        "200":
           description: Success
           schema: # response schema can be specified for each response
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
           examples:
-          # repsonse samples for each type operation produces
+            # repsonse samples for each type operation produces
             application/json:
               username: user1
               email: user@example.com
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: User not found
     # documentation for PUT operation for this path
     put:
@@ -170,19 +172,19 @@ paths:
           required: true
           # for body parameter you should specify request schema instead of type
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
       security:
         - main_auth:
-          - 'write:users'
+            - "write:users"
       responses:
-        '200':
+        "200":
           description: OK
-        '400':
+        "400":
           description: Invalid user supplied
-        '404':
+        "404":
           description: User not found
-  
-  '/echo':
+
+  "/echo":
     post:
       tags:
         - Echo
@@ -192,18 +194,18 @@ paths:
       parameters:
         - name: message
           in: body
-          description: 'Echo payload'
+          description: "Echo payload"
           required: true
           schema:
             type: string
-            example: 'Hello world!'
+            example: "Hello world!"
       security:
         - api_key: []
       responses:
-        '200':
-          description: 'OK'
+        "200":
+          description: "OK"
           examples:
-            'application/json': 'Hello world!'
+            "application/json": "Hello world!"
           schema:
             type: string
           # docuemnt headers for this repsonse
@@ -243,4 +245,4 @@ definitions:
         minLength: 1
         example: Smith
       email:
-        $ref: '#/definitions/Email'
+        $ref: "#/definitions/Email"
