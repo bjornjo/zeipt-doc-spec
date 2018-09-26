@@ -1,248 +1,877 @@
-# This is an **example** API to demontstrate features of OpenAPI specification.
-# It doesn't cover all OpenAPI features. For more full example check out: https://github.com/APIs-guru/petstore_extended
-
-swagger: "2.0"
-# You should specify common part of your endpoints in the following format:
-#   <schemes>://<host><basepath>
-schemes:
-  - http # Remove if your API doesn't support HTTP
-  - https # Remove if your API donsn't support HTTPS
-host: example.com # Replace with your hostname. You can also specify port e.g. example.com:777
-basePath: /api/v1 # Replace with your basePath. Note: SHOULD begin with '/'.
+openapi: 3.0.0
+servers:
+  - url: //petstore.swagger.io/v2
+    description: Default server
+  - url: //petstore.swagger.io/sandbox
+    description: Sandbox server
 info:
-  # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
   description: |
-    This is an **example** API to demontstrate features of OpenAPI specification
-    # Introduction
-    Hello.
-    
-    This specification is intended to to be a good starting point for describint your API in 
-    [OpenAPI/Swagger format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md).
-    It also demonstrates features of [generator-openapi-repo](https://github.com/Rebilly/generator-openapi-repo) tool and 
-    [ReDoc](https://github.com/Rebilly/ReDoc) documentation engine. So beyond the standard OpenAPI syntax we use a few 
-    [vendor extensions](https://github.com/Rebilly/ReDoc/blob/master/docs/redoc-vendor-extensions.md).
+    # Authentication
+    <security-definitions /> 
 
-    # OpenAPI Specification
-    The goal of The OpenAPI Specification is to define a standard, language-agnostic interface to REST APIs which
-    allows both humans and computers to discover and understand the capabilities of the service without access to source
-    code, documentation, or through network traffic inspection. When properly defined via OpenAPI, a consumer can 
-    understand and interact with the remote service with a minimal amount of implementation logic. Similar to what
-    interfaces have done for lower-level programming, OpenAPI removes the guesswork in calling the service.
-
-  version: "1.0.0" # Your API version
-  # It can be any string but it is better to use semantic versioning: http://semver.org/
-  # Warning: OpenAPI require version to be string, but without quotation YAML can recognize it as number.
-
-  title: Example.com # Replace with your API title
-  # Keep it simple. Don't add "API" or verison at the end of the string.
-
-  termsOfService: "https://example.com/terms/" # [Optional] Replace with an URL to your ToS
+    # Endpoints
+  version: 1.0.0
+  title: Digital receipts
+  termsOfService: "http://swagger.io/terms/"
   contact:
-    email: contact@example.com # [Optional] Replace with your contact email
-    url: "http://example.com/contact" # [Optional] Replace with link to your contact form
+    name: API Support
+    email: mail@zeipt.com
+  x-logo:
+    url: "logo.png"
+    altText: Petstore logo
   license:
     name: Apache 2.0
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-  x-logo:
-    url: "logo.png"
-externalDocs:
-  description: Find out how to create Github repo for your OpenAPI spec.
-  url: "https://github.com/Rebilly/generator-openapi-repo"
-produces:
-  # List of mime types your API endpoins can return.
-  # This is a global default. You can OVERWRITE it in each specific operation.
-  # Remove the ones not used in your API
-  - application/json
-  - application/xml
-  - text/csv
-  # you can add any mime type your API produces to the list
-consumes:
-  # List of mime types your API endpoins consumes.
-  # This is a global default. You can OVERWRITE it in each specific operation.
-  # Remove the ones not supported by your API
-  - application/json
-  - application/xml
-  # you can add any mime type your API consumes to the list
 
-# A list of tags used by the specification with additional metadata.
-# The order of the tags can be used to reflect on their order by the parsing tools.
-tags:
-  - name: Echo
-    description: Example echo operations
-  - name: User
-    description: Operations about user
-# Security scheme definitions that can be used across the specification.
-securityDefinitions:
-  main_auth: # security definition name (you can name it as you want)
-    type: oauth2 # authorization type, one of: oauth2, basic, apiKey
-    # the following options are specific to oauth2 type
-    authorizationUrl: "http://example.com/api/oauth/dialog"
-    flow: implicit
-    scopes:
-      "read:users": read users info
-      "write:users": modify or remove users
-  api_key: # security definition name (you can name it as you want)
-    type: apiKey
-    # The following options are specific to apiKey type
-    in: header # Where API key will be passed: header or query
-    name: api_key # API key paramteer name
-  basic_auth: # security definition name (you can name it as you want)
-    type: basic
-
-# Holds the relative paths to the individual endpoints. The path is appended to the
-# basePath in order to construct the full URL.
 paths:
-  "/users/{username}": # path parameter in curly braces
-    # documentation for GET operation for this path
-
-    # parameters list that are used with each operation for this path
-    parameters:
-      - name: pretty_print
-        in: query # place where paramter is passed: path, header, query or body, formData
-        description: Pretty print response
-        # type of the paramter: string, number, integer, boolean, array
-        type: boolean
-    get:
-      tags:
-        - User
-
-      # summary is up to 120 symbold but we recommend to be shortest as possible
-      summary: Get user by user name
-
-      # you can use GFM in operation description too: https://guides.github.com/features/mastering-markdown
-      description: |
-        Some description of the operation. 
-        You can use `markdown` here.
-
-      # operationId should be unique across the whole specification
-      operationId: getUserByName
-
-      # list of parameters for the operation
-      parameters:
-        - name: username
-          in: path
-          description: "The name that needs to be fetched"
-          required: true
-          type: string
-        - name: with_email
-          in: query
-          description: Filter users without email
-          type: boolean
-
-      # security schemas applied to this operation
-      security:
-        - main_auth:
-            - "read:users" # for auth2 provide list of scopes here
-        - api_key: []
-      # overwriting default global produces
-      produces:
-        - application/json
-      responses: # list of responses
-        "200":
-          description: Success
-          schema: # response schema can be specified for each response
-            $ref: "#/definitions/User"
-          examples:
-            # repsonse samples for each type operation produces
-            application/json:
-              username: user1
-              email: user@example.com
-        "403":
-          description: Forbidden
-        "404":
-          description: User not found
-    # documentation for PUT operation for this path
-    put:
-      tags:
-        - User
-      summary: Updated user
-      description: This can only be done by the logged in user.
-      operationId: updateUser
-      produces:
-        - application/json
-      parameters:
-        - name: username
-          in: path
-          description: The name that needs to be updated
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Updated user object
-          required: true
-          # for body parameter you should specify request schema instead of type
-          schema:
-            $ref: "#/definitions/User"
-      security:
-        - main_auth:
-            - "write:users"
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Invalid user supplied
-        "404":
-          description: User not found
-
-  "/echo":
+  /deletezeiptdata:
     post:
-      tags:
-        - Echo
-      summary: Echo test
-      description: Receive the exact message you've sent
-      operationId: echo
+      operationId: registerCard .apps
+      summary: Delete zeipt data
+      description: >
+        Delete user data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider_gcid:
+                  type: string
+                  example: "ekjsldfj032ewqfKd"
+                  description: Reference for deleted data for the specific
+          application/xml:
+            example: |
+              <?xml version="1.0" encoding="UTF-8"?>
+                <check_customer>
+                  <bar_qr>true</bar_qr>
+                  <check_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
+                  <email>true</email>
+                  <tlf>true</tlf>
+                </check_customer>
+              </xml>
+            schema:
+              $ref: "#/components/schemas/Pet"
+  /registercard:
+    post:
+      operationId: registerCard .apps
+      summary: Register a customers card
+      description: >
+        Make a request to register a customers card
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider_gcid:
+                  type: string
+                  required: true
+                  example: "ekjsldfj032ewqfKd"
+                  description: The GCID set by the provider for future reference
+          application/xml:
+            example: |
+              <?xml version="1.0" encoding="UTF-8"?>
+                <check_customer>
+                  <bar_qr>true</bar_qr>
+                  <check_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
+                  <email>true</email>
+                  <tlf>true</tlf>
+                </check_customer>
+              </xml>
+            schema:
+              $ref: "#/components/schemas/Pet"
+  /checkcustomer:
+    get:
+      operationId: checkCustomer .cashier
+      summary: Check if customer exists
+      description: >
+        This endpoint returns a response which describes on which parameters the customer is registered on.
+        Send one or more of the following values to check.
       parameters:
-        - name: message
-          in: body
-          description: "Echo payload"
+        - name: merchant_landcode
+          in: query
           required: true
+          description: The landcode of the merchant making the request
           schema:
             type: string
-            example: "Hello world!"
-      security:
-        - api_key: []
+            example: "NO"
+        - name: merchant_orgnr
+          in: query
+          required: true
+          description: The organization number of the merchant making the request
+          schema:
+            type: string
+        - name: card_token
+          in: query
+          description: Check if the customers card is registered.
+          schema:
+            type: string
+        - name: land_code
+          in: query
+          description: If looking up phone number, the landcode must be present.
+          default: "+47"
+          schema:
+            type: string
+        - name: phone_nr
+          in: query
+          description: Check if the customers phone number is registered.
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Check if the customers email is registered.
+          schema:
+            type: string
+        - name: bar_qr_code
+          in: query
+          description: Check if the QR or bar code that has been presented is registered.
+          schema:
+            type: string
       responses:
         "200":
-          description: "OK"
-          examples:
-            "application/json": "Hello world!"
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  check_customer_transnr:
+                    description: A unique string for the check request
+                    type: string
+                    example: p3D92kn4A7x9N6NnV1Yc
+                  card:
+                    description: Is the customer registered with card?
+                    type: boolean
+                    example: true
+                  tlf:
+                    description: Is the customer registered with phone nr?
+                    type: boolean
+                    example: true
+                  email:
+                    description: Is the customer registered with email?
+                    type: boolean
+                    example: true
+                  bar_qr:
+                    description: Is the QR or bar code registered?
+                    type: boolean
+                    example: true
+                  app_code:
+                    description: Is the customer already registered with this merchants app code
+                    example: true
+                  newsletter:
+                    description: Has this customer signed up for the merchants newsletter?
+                    example: true
+            application/xml:
+              example: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                  <check_customer>
+                    <bar_qr>true</bar_qr>
+                    <check_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
+                    <email>true</email>
+                    <tlf>true</tlf>
+                  </check_customer>
+                </xml>
+              schema:
+                $ref: "#/components/schemas/Pet"
+  /registercustomer:
+    post:
+      operationId: registerCustomer .cashier
+      summary: Register a customer
+      description: >
+        Make a request to register a customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                registration_id_factors:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      description: The email the customer wants to be registered on.
+                    tlf:
+                      type: string
+                      description: The phone number the customer wants to be registered on.
+                    landcode:
+                      type: string
+                      description: If the phone number is entered, the landcode must be present.
+                    qr_bar_code:
+                      type: string
+                      description: To make a new registration to an existing QR or bar code.
+                    check_customer_transnr:
+                      type: string
+                      description: To link the checked customer ID factors for the registration.
+                receipt_nr:
+                  type: string
+                  description: The receipt number to be linked to the registration.
+                delivery_method:
+                  type: string
+                  description: How do the customer want to receive the oboarding link.
+                  enum:
+                    - email
+                    - tlf
+                register_for:
+                  type: object
+                  description: What do the merchant want to register the customer for?
+                  properties:
+                    app_code:
+                      type: string
+                    newsletter:
+                      type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  register_customer_transnr:
+                    description: A unique string for the reqister request.
+                    type: string
+                    example: p3D92kn4A7x9N6NnV1Yc
+                  email:
+                    description: Was it successfully sent?
+                    type: boolean
+                    example: true
+                  tlf:
+                    description: Was it successfully sent?
+                    type: boolean
+                    example: true
+            application/xml:
+              example: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                  <register_customer>
+                    <register_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
+                    <email>true</email>
+                    <tlf>true</tlf>
+                  </register_customer>
+                </xml>
+              schema:
+                $ref: "#/components/schemas/Pet"
+  /receipts:
+    post:
+      operationId: postReceipts .cashier
+      summary: Send a receipt to Zeipt
+      description: >
+        Make a post request to Zeipt/receipts with the following possible fields. 
+        Some of these fields are required in order for the object to be a legal receipt.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Receipt"
+          application/xml:
+            example: |
+              <?xml version="1.0" encoding="UTF-8"?>
+                <Receipt>
+                  <articles>
+                    <Array>
+                      <art_number>230023</art_number>
+                      <art_saft_articlegroup_id>11</art_saft_articlegroup_id>
+                      <art_vat_name>fritt</art_vat_name>
+                      <art_vat_percentage>25</art_vat_percentage>
+                      <code>r</code>
+                      <discount_amount>0</discount_amount>
+                      <name>Levis Jeans</name>
+                      <quantity>1</quantity>
+                      <quantity_price_without_vat>8</quantity_price_without_vat>
+                      <quantity_type>kg</quantity_type>
+                      <recycling_fee>0</recycling_fee>
+                      <sum_total>10</sum_total>
+                      <sum_total_before>8</sum_total_before>
+                      <sum_total_without_vat>8</sum_total_without_vat>
+                      <sum_vat>2</sum_vat>
+                      <vat_code>1</vat_code>
+                    </Array>
+                  </articles>
+                  <delivery_method>
+                    <email>example@mail.com</email>
+                    <tlf_country_code>NO</tlf_country_code>
+                    <tlf_nr>99999999</tlf_nr>
+                    <ui_bar_code>LVCLC2AlmYsbwSCIS0vf</ui_bar_code>
+                    <ui_qr_code>z5mbNSU1vFY4JKVPpN3E</ui_qr_code>
+                    <zeipt_transaction_nr>00970192640751976619</zeipt_transaction_nr>
+                  </delivery_method>
+                  <extra_logic>
+                    <employee_id>432</employee_id>
+                    <employee_name>Sebastian</employee_name>
+                    <employee_text>You have been serviced by</employee_text>
+                    <pos_bar_code>d792d637695ee43db845a8c940a3d2c1</pos_bar_code>
+                    <pos_goodbye_message>Thank you, come again</pos_goodbye_message>
+                    <pos_qr_code>d792d637695ee43db845a8c940a3d2c1</pos_qr_code>
+                    <pos_qr_code_version>1.2</pos_qr_code_version>
+                    <seller_id>444</seller_id>
+                    <seller_name>Sibban</seller_name>
+                  </extra_logic>
+                  <merchant>
+                    <address>Veien 23</address>
+                    <city>Oslo</city>
+                    <country_code>NO</country_code>
+                    <email>example@mail.com</email>
+                    <logo>www.example.com/logo.png</logo>
+                    <name>Storename</name>
+                    <org_nr>915271383</org_nr>
+                    <phone>99999999</phone>
+                    <vat_nr>MVA915271383</vat_nr>
+                    <website>www.example.com</website>
+                    <zip_code>0254</zip_code>
+                  </merchant>
+                  <payments>
+                    <Array>
+                      <aid_nr>315041592E5359532E4444463031</aid_nr>
+                      <bankterminal_string>123456</bankterminal_string>
+                      <bax_number>123456</bax_number>
+                      <currency>NOK</currency>
+                      <date>12/05/18</date>
+                      <gift_number>201712315678</gift_number>
+                      <masked_pan>XXX-XX-X-234F</masked_pan>
+                      <money_back>false</money_back>
+                      <national_merchant_nr>123456</national_merchant_nr>
+                      <payment_amount>10</payment_amount>
+                      <payment_method>bankaxept</payment_method>
+                      <ref_nr>01129955131</ref_nr>
+                      <response_code>OK</response_code>
+                      <timestamp>12:20</timestamp>
+                      <tsi_nr>0000000000000000000000000000000000000000</tsi_nr>
+                      <tvr_nr>0000000000000000000000000000000000000000</tvr_nr>
+                    </Array>
+                  </payments>
+                  <receipt>
+                    <date>2018-09-14T13:36:43Z</date>
+                    <pos_id>4578</pos_id>
+                    <receipt_nr>445768</receipt_nr>
+                    <receipt_type>Elektronisk salgskvittering</receipt_type>
+                  </receipt>
+                  <reference>
+                    <pos_name>Posprovider</pos_name>
+                    <pos_org_nr>915271383</pos_org_nr>
+                    <pos_v>1.0.0</pos_v>
+                    <pos_vat_nr>MVA915271383</pos_vat_nr>
+                    <reference_of_origin>LIB3J4wz8Cdkskjyhlxl</reference_of_origin>
+                    <reference_of_origin_old>pEUDnr5Ytq6Y5GDlr6gO</reference_of_origin_old>
+                    <zeipt_receipt_v>0.89.0</zeipt_receipt_v>
+                  </reference>
+                  <sum>
+                    <after_return_without_vat_discount>0</after_return_without_vat_discount>
+                    <currency>NOK</currency>
+                    <discount_amount>0</discount_amount>
+                    <money_back>0</money_back>
+                    <money_back_method>giftcard</money_back_method>
+                    <recycling_fee>0</recycling_fee>
+                    <recycling_moneyback>0</recycling_moneyback>
+                    <returns_amount>0</returns_amount>
+                    <tip>0</tip>
+                    <total>10</total>
+                    <vat>10</vat>
+                    <vat_codes>1</vat_codes>
+                    <without_vat_discount>0</without_vat_discount>
+                  </sum>
+                  <updates>
+                    <Array>
+                      <update_time>2018-09-14T13:36:43Z</update_time>
+                      <version>1</version>
+                    </Array>
+                  </updates>
+                </Receipt>
+              </xml>
+            schema:
+              $ref: "#/components/schemas/Receipt"
+    get:
+      summary: Get receipt
+      description: Get receipt(s) from Zeipt
+      operationId: getReceipts .cashier .apps
+      parameters:
+        - name: zeipt_transaction_nr
+          in: query
+          description: Get a receipt by its zeipt transaction number
           schema:
             type: string
-          # docuemnt headers for this repsonse
-          headers:
-            X-Rate-Limit: # Header name
-              type: integer # Header value type
-              format: int32 # Header value format
-              description: calls per hour allowed by the user
-            X-Expires-After:
+        - name: receipt_nr
+          in: query
+          schema:
+            type: string
+            description: Get a receipt by its receipt number
+        - name: from_timestamp
+          in: query
+          schema:
+            type: dateTime
+            description: Get receipts since a given timestamp.
+        - name: to_timestamp
+          in: query
+          schema:
+            type: dateTime
+            description: Get receipts to a given timestamp.
+        - name: exact_timestamp
+          in: query
+          schema:
+            type: dateTime
+            description: Get receipts of an exact given timestamp.
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+            application/xml:
+              example: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                  <Receipt>
+                    <articles>
+                      <art_number>230023</art_number>
+                    </articles>
+                  </Receipt>
+                </xml>
+              schema:
+                $ref: "#/components/schemas/Pet"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Pet not found
+
+# SCHEME COMPONENTS
+components:
+  schemas:
+    # RECEIPT SCHEME
+    Receipt:
+      type: object
+      required:
+        - delivery_method
+      properties:
+        reference:
+          type: "object"
+          description: The references of this receipt.
+          required:
+            - zeipt_receipt_v
+            - pos_org_nr
+            - pos_vat_nr
+            - pos_name
+          properties:
+            zeipt_receipt_v:
               type: string
-              format: date-time
-              description: date in UTC when token expires
-# An object to hold data types that can be consumed and produced by operations.
-# These data types can be primitives, arrays or models.
-definitions:
-  Email:
-    description: User email address
-    type: string
-    format: email
-    example: john.smith@example.com
-  User:
-    type: object
-    properties:
-      username:
-        description: User supplied username
-        type: string
-        minLength: 4
-        example: John78
-      firstName:
-        description: User first name
-        type: string
-        minLength: 1
-        example: John
-      lastName:
-        description: User last name
-        type: string
-        minLength: 1
-        example: Smith
-      email:
-        $ref: "#/definitions/Email"
+              default: 0.89.0
+              description: The version of this receipt's Zeipt json file.
+            check_customer_transactionnr:
+              type: string
+              description: If the purchase was made with a registered Zeipt ID factor, this transaction number links the receipt to the customer.
+            register_customer_transactionnr:
+              type: string
+              description: If the customer was registered, this transaction number links the receipt to the registration before verifying the registration link.
+            reference_of_origin:
+              type: string
+              example: LIB3J4wz8Cdkskjyhlxl
+              description: The hash created between the POS, Zeipt and UI when transmitting the receipt from/to Zeipt as a certifier that this is the legal receipt.
+            reference_of_origin_old:
+              type: string
+              example: pEUDnr5Ytq6Y5GDlr6gO
+              description: Used to start event for UI that something has happened with the original receipt transfered to them. For example, the user has went back to the store and changed one of the article lines to another article (UI takes the old receipt and compare it to the new, and does the necassary update for the view).
+            pos_org_nr:
+              type: string
+              example: "915271383"
+              description: The org number of this POS.
+            pos_vat_nr:
+              type: string
+              example: MVA915271383
+              description: The vat number of this POS.
+            pos_name:
+              type: string
+              example: Posprovider
+              description: The name of this POS.
+            pos_v:
+              type: string
+              example: "1.0.0"
+              description: The version of this POS.
+        delivery_method:
+          type: "object"
+          description: How will the receipt be delivered to the customer.
+          properties:
+            email:
+              type: string
+              example: "example@mail.com"
+              description: The receipt may be sent to the customers email.
+            tlf_nr:
+              type: string
+              example: "99999999"
+              description: The receipt may be sent to the customers phone nr.
+            tlf_country_code:
+              type: string
+              example: "NO"
+              description: Tlf country code is required if the customer wants the receipt sent to his/her phone.
+            ui_qr_code:
+              type: string
+              example: "z5mbNSU1vFY4JKVPpN3E"
+              description: If the customer scanned a Zeipt generated QR code.
+            ui_bar_code:
+              type: string
+              example: "LVCLC2AlmYsbwSCIS0vf"
+              description: If the customer scanned a Zeipt generated bar code.
+        merchant:
+          type: "object"
+          description: Information about the merchant where the purchase was made.
+          properties:
+            name:
+              type: string
+              example: "Storename"
+              description: Name of the store
+            org_nr:
+              type: string
+              example: "915271383"
+              description: Organization number of the store
+            vat_nr:
+              type: string
+              example: "MVA915271383"
+              description: The VAT number from the country the operating org number is registred in (if it is VAT registred).
+            country_code:
+              type: string
+              example: "NO"
+              description: The country where the org number of the operator of the store is registred.
+            city:
+              type: string
+              example: "Oslo"
+            zip_code:
+              type: string
+              example: "0254"
+            address:
+              type: string
+              example: "Veien 23"
+            phone:
+              type: string
+              example: "99999999"
+              description: The phone number to contact the store.
+            email:
+              type: string
+              example: "example@mail.com"
+              description: The email address the store wants to be reached at.
+            website:
+              type: string
+              example: "www.example.com"
+              description: The website address that the operating store wants to display on the receipt.
+            logo:
+              type: string
+              example: "www.example.com/logo.png"
+              description: URL to the logo of the store
+        receipt:
+          type: "object"
+          description: Receipt reference
+          properties:
+            receipt_nr:
+              type: string
+              example: "445768"
+              description: The receipt number given by the POS
+            receipt_type:
+              type: string
+              enum:
+                - Elektronisk salgskvittering
+                - Elektronisk returkvittering
+                - Elektronisk proforma-kvittering
+                - Elektronisk treningskvittering
+                - Elektronisk utleveringsseddel
+            pos_id:
+              type: string
+              example: "4578"
+              description: The unique POS ID given to the receipt by its POS.
+            date:
+              type: dateTime
+              example: "2018-09-14T13:36:43Z"
+              description: Date and time for the transaction
+        sum:
+          type: "object"
+          description: The sum of the receipt. Including discounts, recycling fees, taxes and tip. May also be money back.
+          properties:
+            total:
+              type: double
+              example: 10.00
+              description: The total sum after all discounts, recycling fees and taxes, plus tip.
+            currency:
+              type: string
+              example: "NOK"
+            vat_codes:
+              type: string
+              example: "1"
+              description: Summary of what codes has been used for the VAT.
+            vat:
+              type: double
+              example: 10.00
+              description: The total sum of the VAT.
+            without_vat_discount:
+              type: double
+              example: 0.00
+              description: The total sum plus tip, rycycling fees before taxes.
+            after_return_without_vat_discount:
+              type: double
+              example: 0.00
+              description: The total sum plus tip, rycycling fees and returns, discounts (before taxes).
+            recycling_fee:
+              type: double
+              example: 0.00
+              description: Used only when recycling fee is relevant on some products.
+            tip:
+              type: double
+              example: 0.00
+              description: The total sum of the tip to the employee (if this is supported).
+            discount_amount:
+              type: double
+              example: 0.00
+              description: Only used for discounts summary.
+            returns_amount:
+              type: double
+              example: 0.00
+              description: Only used for returns summary.
+            recycling_moneyback:
+              type: double
+              example: 0.00
+              description: Used only when recycling return has been scanned in the store for either cash out or part payment.
+            money_back:
+              type: double
+              example: 0.00
+              description: Money back if you pay more and get paid back.
+            money_back_method:
+              type: string
+              description: What medium has been used by the customer to get their money back.
+              enum:
+                - giftcard
+                - cash
+                - back-to-card
+        articles:
+          type: array
+          description: Each and every article in the receipt
+          items:
+            type: object
+            properties:
+              art_number:
+                type: string
+                example: "230023"
+                description: The number of the article that was given by the POS and given to this object as a whole. Every line in the object is a referent to this.
+              code:
+                type: string
+                example: "r"
+                description: Article code to know what action is taken on this article, for example return or change, money back etc. Empty for a normal purchase (What is to be shown in the view for these codes could be fetched before in an RestAPi).
+              name:
+                type: string
+                example: "Levis Jeans"
+                description: Name of the article.
+              art_saft_articlegroup_id:
+                type: string
+                example: "11"
+                description: The article group in norwegian SAFT format
+              quantity:
+                type: double
+                example: 1.00
+                description: The amount of quantity of that article.
+              quantity_type:
+                type: string
+                description: Code to be used to define the article quantity type.
+                enum:
+                  - kg
+                  - pc
+                  - hg
+                  - st
+              vat_code:
+                type: string
+                example: "1"
+                description: The code of the VAT on this product (What is to be shown in % view for these codes could be fetched before in an RestAPI).
+              art_vat_name:
+                type: string
+                example: "fritt"
+                description: Name of VAT for this art number
+              art_vat_percentage:
+                type: double
+                example: 25.00
+                description: Percentage for this art number
+              quantity_price_without_vat:
+                type: double
+                example: 8.00
+                description: The per article piece price with VAT.
+              sum_total_without_vat:
+                type: double
+                example: 8.00
+                description: The total article price after quantity calculation without VAT.
+              sum_total_before:
+                type: double
+                example: 8.00
+                description: Sum for the article after quantity calculations has been done + discounts and recycling fee before taxes.
+              sum_vat:
+                type: double
+                example: 2.00
+                description: The VAT amount for this product.
+              sum_total:
+                type: double
+                example: 10.00
+                description: Sum for the article after quantity calculations has been done + discounts and recycling fee after taxes.
+              discount_amount:
+                type: double
+                example: 0.00
+                description: Only used for discounts that triggers on the article_number.
+              recycling_fee:
+                type: double
+                example: 0.00
+                description: Used only when recycling fee is relevant on this product.
+        payments:
+          type: array
+          description: Types of payments done for this receipt. Could be multiple.
+          items:
+            type: object
+            properties:
+              payment_method:
+                type: string
+                description: What payment method has been done on this receipt.
+                enum:
+                  - bankaxept
+                  - cash
+                  - gift_medium
+              currency:
+                type: string
+                example: "NOK"
+                description: The currency code used for this transaction.
+              money_back:
+                type: boolean
+                default: false
+                description: If true, the money in this payment has been put back on this medium, calculating all totals to minus.
+              masked_pan:
+                type: string
+                example: "XXX-XX-X-234F"
+                description: The check numbers/letters that are used in the transaction.
+              gift_number:
+                type: string
+                example: "201712315678"
+                description: The reference number used on the gift medium that has been used in the transaction.
+              bax_number:
+                type: string
+                example: "123456"
+                description: Bankterminal nr.
+              national_merchant_nr:
+                type: string
+                example: "123456"
+                description: National merchant_number given by the bankterminal.
+              bankterminal_string:
+                type: string
+                example: "123456"
+                description: The string from the payment terminal that is sent directly to the printer if the cashier do not handle it on before hand.
+              date:
+                type: string
+                example: "12/05/18"
+                description: Date used by the bankterminal or other external units for the transaction (reporting back to the POS for the transaction).
+              timestamp:
+                type: string
+                example: "12:20"
+                description: The time of transaction, set by the bankterminal/other external units when reporting to the POS.
+              ref_nr:
+                type: string
+                example: 01129955131
+                description: National reference number when the transaction is done digitally.
+              aid_nr:
+                type: string
+                example: "315041592E5359532E4444463031"
+                description: Application Identifier. The identifier of the card scheme, received from the card chip.
+              tvr_nr:
+                type: string
+                example: "0000000000000000000000000000000000000000"
+                description: Terminal Verification Results.
+              tsi_nr:
+                type: string
+                example: "0000000000000000000000000000000000000000"
+                description: Transaction Status Indicator.
+              response_code:
+                type: string
+                example: "OK"
+                description: The accepted response from the terminal.
+              payment_amount:
+                type: double
+                example: 10.00
+                description: The final payment amount spent in this transaction.
+        extra_logic:
+          type: object
+          description: Extra values that can benefit the user experience of the receipt.
+          properties:
+            pos_qr_code:
+              type: string
+              example: "d792d637695ee43db845a8c940a3d2c1"
+              description: The QR value for user interface to calculate.
+            pos_qr_code_version:
+              type: string
+              example: "1.2"
+              description: The version of the QR code.
+            pos_bar_code:
+              type: string
+              example: "d792d637695ee43db845a8c940a3d2c1"
+              description: The bar code value for user interface to calculate.
+            seller_id:
+              type: string
+              example: "444"
+              description: The sellers id.
+            seller_name:
+              type: string
+              example: "Sibban"
+              description: The sellers name.
+            employee_id:
+              type: string
+              example: "432"
+              description: The employee ID created by the POS for this login.
+            employee_name:
+              type: string
+              example: "Sebastian"
+              description: The employee name created by the POS for this login.
+            employee_text:
+              type: string
+              maxLength: 200
+              example: "You have been serviced by"
+              description: The text that is to be displayed on the receipt before the name.
+            pos_goodbye_message:
+              type: string
+              maxLength: 200
+              example: "Thank you, come again"
+              description: The message the Operating Merchant might want to add to the view of the receipt.
+        updates:
+          type: array
+          description: Any updates made on this receipt.
+          items:
+            type: object
+            properties:
+              update_time:
+                type: dateTime
+                example: "2018-09-14T13:36:43Z"
+                description: Timestamp for update
+              version:
+                type: integer
+                example: 1
+                description: Current or previous version nr.
+
+    # PET EXAMPLE
+    Pet:
+      type: object
+      required:
+        - name
+        - photoUrls
+      properties:
+        name:
+          description: The name given to a pet
+          type: string
+          example: Guru
+        photoUrls:
+          description: The list of URL to a cute photos featuring pet
+          type: array
+          xml:
+            name: photoUrl
+            wrapped: true
+          items:
+            type: string
+            format: url
+
+        status:
+          type: string
+          description: Pet status in the store
+          enum:
+            - available
+            - pending
+            - sold
+        petType:
+          description: Type of a pet
+          type: string
+      xml:
+        name: Pet
+    # PET
