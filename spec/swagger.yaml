@@ -1,877 +1,4137 @@
+# When deleting users, and get 403, you're no longer in the system
+
 openapi: 3.0.0
 servers:
-  - url: //petstore.swagger.io/v2
-    description: Default server
-  - url: //petstore.swagger.io/sandbox
-    description: Sandbox server
+  - url: "https://api.zeipt.io"
 info:
   description: |
-    # Authentication
-    <security-definitions /> 
+    <p>
+    <br/>
+    <b>Welcome to Zeipt's early access API</b>
+    <br/><br/>
+    We're excited to see that you're among the first to take the next step into a more <b style="color: rgb(60, 191, 113);">sustainable</b> and <b style="color: rgb(60, 191, 113);">cost-efficient</b> retail.
 
-    # Endpoints
+    <br/><br/>
+
+    Start testing by using <a href="https://www.getpostman.com/downloads/" target="_blank">Postman</a>.
+
+    <br/><br/>
+
+    <i>(Additional endpoints are under development)</i>
+
+    </p>
+
+    # Authentication
+    <!-- ReDoc-Inject: <security-definitions> -->
+
+    # Global Error Responses
+
+    <br>
+    <br>
+    <br>
+    <p>These error responses apply to all endpoints:</p>
+
+
+    | Status code | Message | Description |
+    |-----|-------------------|-------------------------|
+    | 400 | BAD_REQUEST::AUTH | Auth token not provided |
+    | 401 | TOKEN_UNRECOGNIZED | Token or credentials not recognized |
+    | 404 | NO_ENDPOINT | The endpoint you're trying to reach doesn't exist |
+    | 405 | NOT_ALLOWED::METHOD | Wrong method for endpoint |
+    | 503 | INTERNAL | Our service is unavailable, wait for us to handle |
+
   version: 1.0.0
   title: Digital receipts
-  termsOfService: "http://swagger.io/terms/"
   contact:
     name: API Support
-    email: mail@zeipt.com
+    email: sebastian@zeipt.com
   x-logo:
-    url: "logo.png"
-    altText: Petstore logo
-  license:
-    name: Apache 2.0
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+    url: logo.png
+    altText: Zeipt logo
+
+tags:
+  - name: Getting started .cashier .apps
+  - name: Check customer .cashier
+  - name: Register end user .apps
+  - name: Receipt as a service .cashier
+  - name: Receipt as a service .apps
+  - name: Webhook .apps
+  - name: GDPR .cashier
+  - name: GDPR .apps
 
 paths:
-  /deletezeiptdata:
+  /echo:
     post:
-      operationId: registerCard .apps
-      summary: Delete zeipt data
-      description: >
-        Delete user data
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                provider_gcid:
-                  type: string
-                  example: "ekjsldfj032ewqfKd"
-                  description: Reference for deleted data for the specific
-          application/xml:
-            example: |
-              <?xml version="1.0" encoding="UTF-8"?>
-                <check_customer>
-                  <bar_qr>true</bar_qr>
-                  <check_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
-                  <email>true</email>
-                  <tlf>true</tlf>
-                </check_customer>
-              </xml>
-            schema:
-              $ref: "#/components/schemas/Pet"
-  /registercard:
-    post:
-      operationId: registerCard .apps
-      summary: Register a customers card
-      description: >
-        Make a request to register a customers card
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                provider_gcid:
-                  type: string
-                  required: true
-                  example: "ekjsldfj032ewqfKd"
-                  description: The GCID set by the provider for future reference
-          application/xml:
-            example: |
-              <?xml version="1.0" encoding="UTF-8"?>
-                <check_customer>
-                  <bar_qr>true</bar_qr>
-                  <check_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
-                  <email>true</email>
-                  <tlf>true</tlf>
-                </check_customer>
-              </xml>
-            schema:
-              $ref: "#/components/schemas/Pet"
-  /checkcustomer:
-    get:
-      operationId: checkCustomer .cashier
-      summary: Check if customer exists
-      description: >
-        This endpoint returns a response which describes on which parameters the customer is registered on.
-        Send one or more of the following values to check.
-      parameters:
-        - name: merchant_landcode
-          in: query
-          required: true
-          description: The landcode of the merchant making the request
-          schema:
-            type: string
-            example: "NO"
-        - name: merchant_orgnr
-          in: query
-          required: true
-          description: The organization number of the merchant making the request
-          schema:
-            type: string
-        - name: card_token
-          in: query
-          description: Check if the customers card is registered.
-          schema:
-            type: string
-        - name: land_code
-          in: query
-          description: If looking up phone number, the landcode must be present.
-          default: "+47"
-          schema:
-            type: string
-        - name: phone_nr
-          in: query
-          description: Check if the customers phone number is registered.
-          schema:
-            type: string
-        - name: email
-          in: query
-          description: Check if the customers email is registered.
-          schema:
-            type: string
-        - name: bar_qr_code
-          in: query
-          description: Check if the QR or bar code that has been presented is registered.
-          schema:
-            type: string
+      tags:
+        - Getting started .cashier .apps
+      operationId: checkAlive.apps.cashier
+      summary: Test connection
+      description: |
+        Begin by sending an empty post request to our echo service.
       responses:
         "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  check_customer_transnr:
-                    description: A unique string for the check request
-                    type: string
-                    example: p3D92kn4A7x9N6NnV1Yc
-                  card:
-                    description: Is the customer registered with card?
-                    type: boolean
-                    example: true
-                  tlf:
-                    description: Is the customer registered with phone nr?
-                    type: boolean
-                    example: true
-                  email:
-                    description: Is the customer registered with email?
-                    type: boolean
-                    example: true
-                  bar_qr:
-                    description: Is the QR or bar code registered?
-                    type: boolean
-                    example: true
-                  app_code:
-                    description: Is the customer already registered with this merchants app code
-                    example: true
-                  newsletter:
-                    description: Has this customer signed up for the merchants newsletter?
-                    example: true
+                $ref: "#/components/schemas/Echo"
             application/xml:
               example: |
-                <?xml version="1.0" encoding="UTF-8"?>
-                  <check_customer>
-                    <bar_qr>true</bar_qr>
-                    <check_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
-                    <email>true</email>
-                    <tlf>true</tlf>
-                  </check_customer>
-                </xml>
+                All responses are json
               schema:
-                $ref: "#/components/schemas/Pet"
-  /registercustomer:
-    post:
-      operationId: registerCustomer .cashier
-      summary: Register a customer
-      description: >
-        Make a request to register a customer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                registration_id_factors:
-                  type: object
-                  properties:
-                    email:
-                      type: string
-                      description: The email the customer wants to be registered on.
-                    tlf:
-                      type: string
-                      description: The phone number the customer wants to be registered on.
-                    landcode:
-                      type: string
-                      description: If the phone number is entered, the landcode must be present.
-                    qr_bar_code:
-                      type: string
-                      description: To make a new registration to an existing QR or bar code.
-                    check_customer_transnr:
-                      type: string
-                      description: To link the checked customer ID factors for the registration.
-                receipt_nr:
-                  type: string
-                  description: The receipt number to be linked to the registration.
-                delivery_method:
-                  type: string
-                  description: How do the customer want to receive the oboarding link.
-                  enum:
-                    - email
-                    - tlf
-                register_for:
-                  type: object
-                  description: What do the merchant want to register the customer for?
-                  properties:
-                    app_code:
-                      type: string
-                    newsletter:
-                      type: string
-      responses:
-        "200":
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  register_customer_transnr:
-                    description: A unique string for the reqister request.
-                    type: string
-                    example: p3D92kn4A7x9N6NnV1Yc
-                  email:
-                    description: Was it successfully sent?
-                    type: boolean
-                    example: true
-                  tlf:
-                    description: Was it successfully sent?
-                    type: boolean
-                    example: true
-            application/xml:
-              example: |
-                <?xml version="1.0" encoding="UTF-8"?>
-                  <register_customer>
-                    <register_customer_transnr>p3D92kn4A7x9N6NnV1Yc</check_customer_transnr>
-                    <email>true</email>
-                    <tlf>true</tlf>
-                  </register_customer>
-                </xml>
-              schema:
-                $ref: "#/components/schemas/Pet"
-  /receipts:
-    post:
-      operationId: postReceipts .cashier
-      summary: Send a receipt to Zeipt
-      description: >
-        Make a post request to Zeipt/receipts with the following possible fields. 
-        Some of these fields are required in order for the object to be a legal receipt.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Receipt"
-          application/xml:
-            example: |
-              <?xml version="1.0" encoding="UTF-8"?>
-                <Receipt>
-                  <articles>
-                    <Array>
-                      <art_number>230023</art_number>
-                      <art_saft_articlegroup_id>11</art_saft_articlegroup_id>
-                      <art_vat_name>fritt</art_vat_name>
-                      <art_vat_percentage>25</art_vat_percentage>
-                      <code>r</code>
-                      <discount_amount>0</discount_amount>
-                      <name>Levis Jeans</name>
-                      <quantity>1</quantity>
-                      <quantity_price_without_vat>8</quantity_price_without_vat>
-                      <quantity_type>kg</quantity_type>
-                      <recycling_fee>0</recycling_fee>
-                      <sum_total>10</sum_total>
-                      <sum_total_before>8</sum_total_before>
-                      <sum_total_without_vat>8</sum_total_without_vat>
-                      <sum_vat>2</sum_vat>
-                      <vat_code>1</vat_code>
-                    </Array>
-                  </articles>
-                  <delivery_method>
-                    <email>example@mail.com</email>
-                    <tlf_country_code>NO</tlf_country_code>
-                    <tlf_nr>99999999</tlf_nr>
-                    <ui_bar_code>LVCLC2AlmYsbwSCIS0vf</ui_bar_code>
-                    <ui_qr_code>z5mbNSU1vFY4JKVPpN3E</ui_qr_code>
-                    <zeipt_transaction_nr>00970192640751976619</zeipt_transaction_nr>
-                  </delivery_method>
-                  <extra_logic>
-                    <employee_id>432</employee_id>
-                    <employee_name>Sebastian</employee_name>
-                    <employee_text>You have been serviced by</employee_text>
-                    <pos_bar_code>d792d637695ee43db845a8c940a3d2c1</pos_bar_code>
-                    <pos_goodbye_message>Thank you, come again</pos_goodbye_message>
-                    <pos_qr_code>d792d637695ee43db845a8c940a3d2c1</pos_qr_code>
-                    <pos_qr_code_version>1.2</pos_qr_code_version>
-                    <seller_id>444</seller_id>
-                    <seller_name>Sibban</seller_name>
-                  </extra_logic>
-                  <merchant>
-                    <address>Veien 23</address>
-                    <city>Oslo</city>
-                    <country_code>NO</country_code>
-                    <email>example@mail.com</email>
-                    <logo>www.example.com/logo.png</logo>
-                    <name>Storename</name>
-                    <org_nr>915271383</org_nr>
-                    <phone>99999999</phone>
-                    <vat_nr>MVA915271383</vat_nr>
-                    <website>www.example.com</website>
-                    <zip_code>0254</zip_code>
-                  </merchant>
-                  <payments>
-                    <Array>
-                      <aid_nr>315041592E5359532E4444463031</aid_nr>
-                      <bankterminal_string>123456</bankterminal_string>
-                      <bax_number>123456</bax_number>
-                      <currency>NOK</currency>
-                      <date>12/05/18</date>
-                      <gift_number>201712315678</gift_number>
-                      <masked_pan>XXX-XX-X-234F</masked_pan>
-                      <money_back>false</money_back>
-                      <national_merchant_nr>123456</national_merchant_nr>
-                      <payment_amount>10</payment_amount>
-                      <payment_method>bankaxept</payment_method>
-                      <ref_nr>01129955131</ref_nr>
-                      <response_code>OK</response_code>
-                      <timestamp>12:20</timestamp>
-                      <tsi_nr>0000000000000000000000000000000000000000</tsi_nr>
-                      <tvr_nr>0000000000000000000000000000000000000000</tvr_nr>
-                    </Array>
-                  </payments>
-                  <receipt>
-                    <date>2018-09-14T13:36:43Z</date>
-                    <pos_id>4578</pos_id>
-                    <receipt_nr>445768</receipt_nr>
-                    <receipt_type>Elektronisk salgskvittering</receipt_type>
-                  </receipt>
-                  <reference>
-                    <pos_name>Posprovider</pos_name>
-                    <pos_org_nr>915271383</pos_org_nr>
-                    <pos_v>1.0.0</pos_v>
-                    <pos_vat_nr>MVA915271383</pos_vat_nr>
-                    <reference_of_origin>LIB3J4wz8Cdkskjyhlxl</reference_of_origin>
-                    <reference_of_origin_old>pEUDnr5Ytq6Y5GDlr6gO</reference_of_origin_old>
-                    <zeipt_receipt_v>0.89.0</zeipt_receipt_v>
-                  </reference>
-                  <sum>
-                    <after_return_without_vat_discount>0</after_return_without_vat_discount>
-                    <currency>NOK</currency>
-                    <discount_amount>0</discount_amount>
-                    <money_back>0</money_back>
-                    <money_back_method>giftcard</money_back_method>
-                    <recycling_fee>0</recycling_fee>
-                    <recycling_moneyback>0</recycling_moneyback>
-                    <returns_amount>0</returns_amount>
-                    <tip>0</tip>
-                    <total>10</total>
-                    <vat>10</vat>
-                    <vat_codes>1</vat_codes>
-                    <without_vat_discount>0</without_vat_discount>
-                  </sum>
-                  <updates>
-                    <Array>
-                      <update_time>2018-09-14T13:36:43Z</update_time>
-                      <version>1</version>
-                    </Array>
-                  </updates>
-                </Receipt>
-              </xml>
-            schema:
-              $ref: "#/components/schemas/Receipt"
-    get:
-      summary: Get receipt
-      description: Get receipt(s) from Zeipt
-      operationId: getReceipts .cashier .apps
-      parameters:
-        - name: zeipt_transaction_nr
-          in: query
-          description: Get a receipt by its zeipt transaction number
-          schema:
-            type: string
-        - name: receipt_nr
-          in: query
-          schema:
-            type: string
-            description: Get a receipt by its receipt number
-        - name: from_timestamp
-          in: query
-          schema:
-            type: dateTime
-            description: Get receipts since a given timestamp.
-        - name: to_timestamp
-          in: query
-          schema:
-            type: dateTime
-            description: Get receipts to a given timestamp.
-        - name: exact_timestamp
-          in: query
-          schema:
-            type: dateTime
-            description: Get receipts of an exact given timestamp.
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Pet"
-            application/xml:
-              example: |
-                <?xml version="1.0" encoding="UTF-8"?>
-                  <Receipt>
-                    <articles>
-                      <art_number>230023</art_number>
-                    </articles>
-                  </Receipt>
-                </xml>
-              schema:
-                $ref: "#/components/schemas/Pet"
-        "400":
-          description: Invalid ID supplied
-        "404":
-          description: Pet not found
+                $ref: "#/components/schemas/Echo"
 
-# SCHEME COMPONENTS
+  /cashier/check-id:
+    post:
+      tags:
+        - Check customer .cashier
+      operationId: checkCustomer.cashier
+      summary: Check if customer exists
+      description: |
+        Post a customer's ID to verify if it's registered with Zeipt.
+        <br/>
+        <br/>
+        The received check_customer_transnr can be used as a reference for the available IDs when posting the receipt to the customer.
+
+      security:
+        - Auth_token: null
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Checkcustomer"
+          application/xml:
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <merchant>
+                <org_number>NO915271383MVA</org_number>
+                <merchant_country_code>NO</merchant_country_code>
+              </merchant>
+              <zeipt_card_token></zeipt_card_token>
+              <email></email>
+              <telephone>
+                <country_calling_code>+47</country_calling_code>
+                <number></number>
+              </telephone>
+              <ui_qr_code></ui_qr_code>
+              <ui_bar_code></ui_bar_code>
+
+            schema:
+              $ref: "#/components/schemas/Checkcustomer"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckcustomerResponse"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                $ref: "#/components/schemas/CheckcustomerResponse"
+
+        "204":
+          description: No IDs found.
+
+        "400":
+          description: No merchant value provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+
+  /cashier/receipt:
+    post:
+      operationId: postReceipts.cashier
+      tags:
+        - Receipt as a service .cashier
+      summary: Send receipt
+      description: |
+        Post the receipt to Zeipt in the following format.
+        <br/>
+        Be sure to at least add the required fields, and use the defined standards.
+
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Receipt"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Receipt"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <reference>
+                <zeipt_receipt_v>0.97.3</zeipt_receipt_v>
+                <check_customer_transnr></check_customer_transnr>
+                <invite_customer_transnr></invite_customer_transnr>
+                <return>
+                  <reference_of_origin></reference_of_origin>
+                  <zeipt_linkcode_transnr></zeipt_linkcode_transnr>
+                </return>
+                <coupons>
+                  <coupon_number>Q4YHULncMT</coupon_number>
+                </coupons>
+              </reference>
+              <direct_delivery>
+                <direct_delivery>false</direct_delivery>
+                <email></email>
+                <telephone>
+                  <country_calling_code>+47</country_calling_code>
+                  <number></number>
+                </telephone>
+                <zeipt_card_token></zeipt_card_token>
+                <ui_qr_code></ui_qr_code>
+                <ui_bar_code></ui_bar_code>
+              </direct_delivery>
+              <merchant>
+                <org_number></org_number>
+                <merchant_country_code>NO</merchant_country_code>
+                <purchase_location>
+                  <purchase_country_code>NO</purchase_country_code>
+                  <city>Oslo</city>
+                  <zip_code>0254</zip_code>
+                  <address>Veien 23</address>
+                  <store_name>Shop&amp;Go</store_name>
+                  <cashier_number>543</cashier_number>
+                  <store_number>22</store_number>
+                </purchase_location>
+                <telephone>
+                  <country_calling_code>+47</country_calling_code>
+                  <number>92696846</number>
+                </telephone>
+                <email>example@mail.com</email>
+                <website>www.example.com</website>
+                <travel_reference>
+                  <travel_driver_id>653</travel_driver_id>
+                  <travel_driver_name>Jeppe Skaar</travel_driver_name>
+                  <travel_driver_certification>FB0YCFgffW</travel_driver_certification>
+                  <travel_company_certification>tlDCkIyOEZ</travel_company_certification>
+                  <car_license_plate>AF46035</car_license_plate>
+                </travel_reference>
+              </merchant>
+              <receipt>
+                <receipt_number></receipt_number>
+                <receipt_type>Elektronisk salgskvittering</receipt_type>
+                <timestamp>2008-09-15T15:53:00+01</timestamp>
+              </receipt>
+              <sum>
+                <total_sum_without_vat_and_substractions>40.6</total_sum_without_vat_and_substractions>
+                <total_sum_without_vat>38.1</total_sum_without_vat>
+                <total_vat_amount>9.53</total_vat_amount>
+                <total_sum>47.63</total_sum>
+                <total_tip_amount>2.5</total_tip_amount>
+                <total_currency>NOK</total_currency>
+                <total_vat_name>MVA</total_vat_name>
+                <global_discounts>
+                  <description>GuL9pA</description>
+                  <amount>2.5</amount>
+                  <percentage>6.2</percentage>
+                </global_discounts>
+              </sum>
+              <articles>
+                <art_number>230023</art_number>
+                <art_reference_another_art></art_reference_another_art>
+                <return>false</return>
+                <name>Taxi standard tax</name>
+                <image_uri></image_uri>
+                <art_saft_articlegroup_id>11</art_saft_articlegroup_id>
+                <quantity>11.4</quantity>
+                <quantity_type>km</quantity_type>
+                <quantity_price_without_vat>5.315</quantity_price_without_vat>
+                <art_vat_code>1</art_vat_code>
+                <art_vat_name>MVA</art_vat_name>
+                <art_vat_percentage>25</art_vat_percentage>
+                <art_sum_without_vat_and_substractions>60.6</art_sum_without_vat_and_substractions>
+                <art_sum_without_vat>40.6</art_sum_without_vat>
+                <art_vat_amount>10.15</art_vat_amount>
+                <art_sum>53.25</art_sum>
+                <discounts>
+                  <description>Q4YHULncMT</description>
+                  <amount>20</amount>
+                  <percentage>33</percentage>
+                </discounts>
+                <recycling_fee>2.5</recycling_fee>
+                <travel>
+                  <car_flight_reference_id>rCkBHb5yUA</car_flight_reference_id>
+                  <start_time>2019-04-05T14:30:23+01</start_time>
+                  <end_time>2019-04-05T14:47:38+01</end_time>
+                  <start_location>Nedre Vollgate 3</start_location>
+                  <end_location>Skallumhagen 48</end_location>
+                  <distance_value>11.4</distance_value>
+                  <distance_value_definition>km</distance_value_definition>
+                </travel>
+              </articles>
+              <payments>
+                <payment_method>credit card</payment_method>
+                <payment_method_type>bankaxept</payment_method_type>
+                <currency>SEK</currency>
+                <exchange_rate>1.1</exchange_rate>
+                <moneyback>false</moneyback>
+                <masked_pan>1234</masked_pan>
+                <gift_number>201712315678</gift_number>
+                <timestamp>2019-04-05T14:48:38+01</timestamp>
+                <bank_terminal_id>12329911</bank_terminal_id>
+                <national_merchant_number>324295</national_merchant_number>
+                <ref_nr>567734 443372 IA1</ref_nr>
+                <aid_nr>D5780000021010</aid_nr>
+                <tvr_nr>8000048000</tvr_nr>
+                <tsi_nr>6800</tsi_nr>
+                <response_code>00</response_code>
+                <tip_amount>2.5</tip_amount>
+                <payment_vat_amount>10.48</payment_vat_amount>
+                <payment_amount>55.14</payment_amount>
+              </payments>
+              <extra_logic>
+                <receipt_bar_code>
+                  <encoding>interleaved2of5</encoding>
+                  <value>Z1n0flmEOO</value>
+                  <display_value>15623489202</display_value>
+                </receipt_bar_code>
+                <receipt_qr_url>api.zeipt.io/a792d637695ee43db845a8c940a3d2c1.html</receipt_qr_url>
+                <return_policy>30 days return</return_policy>
+                <customer_first_name>John</customer_first_name>
+                <customer_surname>Watson</customer_surname>
+                <customer_telephone>
+                  <country_calling_code>+47</country_calling_code>
+                  <number></number>
+                </customer_telephone>
+                <seller_id>444</seller_id>
+                <seller_name>Sibban</seller_name>
+                <operator_id>432</operator_id>
+                <operator_name>Sebastian</operator_name>
+                <operator_text>You have been serviced by</operator_text>
+                <cashier_goodbye_message>Thank you, come again</cashier_goodbye_message>
+                <opening_hours>Man-Fri: 07.00-24.00 Sat-Sun: 08.00-24.00</opening_hours>
+              </extra_logic>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                $ref: "#/components/schemas/ReceiptResponse"
+
+        "400":
+          description: No merchant value provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+
+        "409":
+          description: This receipt has already been handled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DUPLICATION::RECEIPT-[zeipt_receipt_transnr]"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DUPLICATION::RECEIPT-[zeipt_receipt_transnr]"
+
+        "422":
+          description: Required values not provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "MISSING::CUSTOMER_ID / MISSING::MINIMUM"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    example: "MISSING::CUSTOMER_ID / MISSING::MINIMUM"
+
+  /cashier/raw-receipt:
+    post:
+      tags:
+        - Receipt as a service .cashier
+      operationId: postRaw.cashier
+      summary: Send custom receipt
+      description: "Post receipt in your custom json/xml format, inside brackets."
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          text/plain:
+            example: |
+              { 
+              merchant: { 'org_number': 'NO915271383MVA', 'merchant_country_code': 'NO'}, 
+              receipt: { YOUR RECEIPT FORMAT } 
+              }
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RawReceiptResponse"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                $ref: "#/components/schemas/RawReceiptResponse"
+
+        "400":
+          description: No merchant value provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+
+        "409":
+          description: This receipt has already been handled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DUPLICATION::RECEIPT-[zeipt_receipt_transnr]"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DUPLICATION::RECEIPT-[zeipt_receipt_transnr]"
+
+        "422":
+          description: Required values not provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::MAPPING_TEMPLATE / MISSING::MERCHANT_ID"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::MAPPING_TEMPLATE / MISSING::MERCHANT_ID"
+
+  /cashier/fetch-receipt:
+    post:
+      tags:
+        - Receipt as a service .cashier
+      operationId: fetchMerchantsReceipt.cashier
+      summary: Fetch merchant's receipt(s)
+      description: Fetch your merchant's receipt(s). Filter by either a zeipt_receipt_transnr or timespan.
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FetchReceiptCashier"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/FetchReceiptCashier"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <merchant>
+                <org_number>NO915271383MVA</org_number>
+                <merchant_country_code>NO</merchant_country_code>
+              </merchant>
+              <zeipt_receipt_transnr>mpg1W0ri6SozPklqeGjX</zeipt_receipt_transnr>
+              <all_data>
+                <from_timestamp>2008-09-15T15:53:00+01</from_timestamp>
+                <to_timestamp>2008-09-15T15:53:00+01</to_timestamp>
+              </all_data>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  receipts:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/CashierReceipt"
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  receipts:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/CashierReceipt"
+              example: |
+                All responses are json
+
+        "204":
+          description: No receipts found.
+
+        "400":
+          description: No merchant value provided / Timestamps not valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT / BAD_REQUEST::TIMESTAMP"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT / BAD_REQUEST::TIMESTAMP"
+
+        "403":
+          description: You don’t have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: Receipt query not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+  /cashier/delete-receipt:
+    post:
+      tags:
+        - GDPR .cashier
+      operationId: deleteMerchantReceipt.cashier
+      summary: Delete receipt(s)
+      description: Delete the merchant's receipt(s)
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteCashierReceipt"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/DeleteCashierReceipt"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <merchant>
+                <org_number>NO915271383MVA</org_number>
+                <merchant_country_code>NO</merchant_country_code>
+              </merchant>
+              <zeipt_receipt_transnr></zeipt_receipt_transnr>
+              <all_data>
+                <from_timestamp>2008-09-15T15:53:00+01</from_timestamp>
+                <to_timestamp>2008-09-15T15:53:00+01</to_timestamp>
+              </all_data>
+              <all_receipts>false</all_receipts>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteCashierReceiptResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/DeleteCashierReceiptResponse"
+              example: |
+                All responses are json
+
+        "204":
+          description: No receipts found.
+
+        "400":
+          description: No merchant value provided / Timestamps not valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT / BAD_REQUEST::TIMESTAMP"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT / BAD_REQUEST::TIMESTAMP"
+
+        "403":
+          description: You don’t have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: zeipt_receipt_transnr / time interval / all_receipts was not set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+  /cashier/delete-merchant:
+    post:
+      tags:
+        - GDPR .cashier
+      operationId: deleteMerchant.cashier
+      summary: Delete merchant
+      description: Delete the merchant relation.
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteCashierMerchant"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/DeleteCashierMerchant"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <merchant>
+                <org_number>NO915271383MVA</org_number>
+                <merchant_country_code>NO</merchant_country_code>
+              </merchant>
+              
+
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteCashierMerchantResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/DeleteCashierMerchantResponse"
+              example: |
+                All responses are json
+
+        "400":
+          description: No merchant value provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MERCHANT"
+
+        "403":
+          description: You don’t have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+  /app/register-providergcid:
+    post:
+      tags:
+        - Register end user .apps
+      operationId: registerProviderGcid.apps
+      summary: Register user
+      description: |
+        Connect your end user with Zeipt by sending your user's unique identifier.
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterProviderGCID"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/RegisterProviderGCID"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+
+	
+
+            
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterProviderGCIDResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/RegisterProviderGCIDResponse"
+              example: |
+                All responses are json
+
+        "400":
+          description: provider_gcid not provided / supported.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID / BAD_REQUEST::UNSUPPORTED"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID / BAD_REQUEST::UNSUPPORTED"
+
+        "409":
+          description: This user has already been registered.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DUPLICATION::USER-[provider_gcid]"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DUPLICATION::USER-[provider_gcid]"
+
+  /app/register-card:
+    post:
+      tags:
+        - Register end user .apps
+      operationId: registerCard.apps
+      summary: Register card
+      description: |
+        This redirects the user to a URL that takes the user step by step to authenticate and register their debit / credit card with Zeipt.
+        If sucessfully authenticated, the returned "zeipt_card_transnr" can be used to <a href="https://zeipt.com/api-doc#operation/fetchCustomerCard.apps">fetch the end user's cards</a>.
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterCard"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/RegisterCard"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+              
+      responses:
+        "301":
+          description: Redirect.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  in_header:
+                    default: "redirect_url"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  in_header:
+                    default: "redirect_url"
+
+        "400":
+          description: provider_gcid not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+
+        "403":
+          description: You don’t have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: Success/failure URL not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::URL"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::URL"
+
+        "503":
+          description: Third party service is unavailable.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "THIRD_PARTY"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "THIRD_PARTY"
+
+  /app/register-id:
+    post:
+      tags:
+        - Register end user .apps
+      operationId: registerId.apps
+      summary: Register ID(s)
+      description: |
+        Make a request to register the user's identifier
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterId"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/RegisterId"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+              <card>
+                <token_provider></token_provider>
+                <zeipt_card_token></zeipt_card_token>
+                <token_expiration_date>2008-09-15T15:53:00+01</token_expiration_date>
+                <last_digits>4444</last_digits>
+                <card_type></card_type>
+              </card>
+              <bank_account>
+                <token_provider></token_provider>
+                <bank_account_token></bank_account_token>
+                <bank_account_number></bank_account_number>
+              </bank_account>
+              <email></email>
+              <telephone>
+                <country_calling_code>+47</country_calling_code>
+                <number></number>
+              </telephone>
+              <ui_qr_code></ui_qr_code>
+              <ui_bar_code></ui_bar_code>
+              
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterIdResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/RegisterIdResponse"
+              example: |
+                All responses are json
+
+        "400":
+          description: provider_gcid not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+
+        "403":
+          description: You don't have access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: Required card value / ID query is missing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::CARD_FIELDS /  MISSING::ID_QUERY"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::CARD_FIELDS /  MISSING::ID_QUERY"
+
+  /app/fetch-card:
+    post:
+      tags:
+        - Register end user .apps
+      operationId: fetchCustomerCard.apps
+      summary: Fetch end user card(s)
+      description: Fetch the user's card(s) by their GCID
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FetchCard"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/FetchCard"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+              <zeipt_card_transnr>string</zeipt_card_transnr>
+              <all_cards>false</all_cards>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FetchCardResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/FetchCardResponse"
+              example: |
+                All responses are json
+
+        "204":
+          description: No cards found.
+
+        "400":
+          description: provider_gcid not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+
+        "403":
+          description: You don't have access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: Card query not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::CARD_QUERY"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::CARD_QUERY"
+
+  /app/fetch-receipt:
+    post:
+      tags:
+        - Receipt as a service .apps
+      operationId: fetchCustomerReceipt.apps
+      summary: Fetch end user receipt(s)
+      description: Fetch the user's receipt(s) by their GCID
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FetchReceipt"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/FetchReceipt"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+              <zeipt_receipt_transnr>mpg1W0ri6SozPklqeGjX</zeipt_receipt_transnr>
+              <all_data>
+                <from_timestamp>2008-09-15T15:53:00+01</from_timestamp>
+                <to_timestamp>2008-09-15T15:53:00+01</to_timestamp>
+              </all_data>
+              
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  receipts:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/UIReceipt"
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  receipts:
+                    type: array
+                    items:
+                      type: object
+                      $ref: "#/components/schemas/UIReceipt"
+              example: |
+                All responses are json
+
+        "204":
+          description: No receipts found.
+
+        "400":
+          description: provider_gcid not provided / Timestamps not valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID / BAD_REQUEST::TIMESTAMP"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID / BAD_REQUEST::TIMESTAMP"
+
+        "403":
+          description: You don't have access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: Neither zeipt_receipt_transnr nor time interval was set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+  /app/register-webhook:
+    post:
+      tags:
+        - Webhook .apps
+      operationId: registerWebhook.apps
+      summary: Register webhook
+      description: |
+        Receive a webhook URL to listen for updates.
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterWebhook"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/RegisterWebhook"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <webhook_url>https://myserver.com/send/callback/here</webhook_url>
+              <method>POST</method>
+              <message_format>UTF-8</message_format>
+              <security_type></security_type>
+              <security_value></security_value>
+              <port_number></port_number>
+            
+      responses:
+        "201":
+          description: Webhook created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterWebhookResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/RegisterWebhookResponse"
+              example: |
+                All responses are json
+
+        "400":
+          description: Required values not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::VALUES"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::VALUES"
+
+        "403":
+          description: You don’t have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "503":
+          description: Test alive failed on your endpoint.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "EXTERNAL"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "EXTERNAL"
+
+      callbacks:
+        messageEvent:
+          "{$request.body#/webhook_url}":
+            post:
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          example: Some event happened
+                      required:
+                        - message
+              responses:
+                "200":
+                  description: Your server returns this code if it accepts the callback
+
+  /app/fetch-message:
+    post:
+      tags:
+        - Webhook .apps
+      operationId: fetchMessage.apps
+      summary: Fetch message
+      description: |
+
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FetchMessage"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/FetchMessage"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <message_id></message_id>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FetchMessageResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/FetchMessageResponse"
+              example: |
+                All responses are json
+
+        "204":
+          description: No messages found.
+
+        "400":
+          description: Required message_id not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MESSAGE"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::MESSAGE"
+
+  /app/delete-webhook:
+    post:
+      tags:
+        - Webhook .apps
+      operationId: deleteWebhook.apps
+      summary: Delete webhook(s)
+      description: |
+        Delete webhook URL.
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteWebhook"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/DeleteWebhook"
+            example:
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <webhook_url></webhook_url>
+              <all_webhooks>false</all_webhooks>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteWebhookResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/DeleteWebhookResponse"
+              example: |
+                All responses are json
+
+        "204":
+          description: No URLs found.
+
+        "422":
+          description: No query parameters were set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::WEBHOOK_QUERY"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::WEBHOOK_QUERY"
+
+  /app/delete-providergcid:
+    post:
+      tags:
+        - GDPR .apps
+      operationId: deleteProviderGcid.apps
+      summary: Delete user
+      description: |
+        Delete your end user relation with Zeipt by sending your user's unique identifier.
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteProviderGCID"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/DeleteProviderGCID"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteProviderGCIDResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/DeleteProviderGCIDResponse"
+              example: |
+                All responses are json
+
+        "400":
+          description: provider_gcid not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+
+        "403":
+          description: You don't have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+  /app/delete-id:
+    post:
+      tags:
+        - GDPR .apps
+      operationId: deleteId.apps
+      summary: Delete ID(s)
+      description: |
+        Make a request to delete the user's identifier(s)
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteId"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/DeleteId"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+              <card>
+                <zeipt_card_transnr></zeipt_card_transnr>
+                <all_cards>false</all_cards>
+              </card>
+              <bank_account>
+                <zeipt_bank_account_transnr></zeipt_bank_account_transnr>
+                <all_bank_accounts>false</all_bank_accounts>
+              </bank_account>
+              <email>
+                <address></address>
+                <all_emails>false</all_emails>
+              </email>
+              <telephone>
+                <country_calling_code>+47</country_calling_code>
+                <number></number>
+                <all_telephone_numbers>false</all_telephone_numbers>
+              </telephone>
+              <qr_code>
+                <ui_qr_code></ui_qr_code>
+                <all_qr_codes>false</all_qr_codes>
+              </qr_code>
+              <bar_code>
+                <ui_bar_code></ui_bar_code>
+                <all_bar_codes>false</all_bar_codes>
+              </bar_code>
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteIdResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/DeleteIdResponse"
+              example: |
+                All responses are json
+
+        "204":
+          description: No IDs found.
+
+        "400":
+          description: provider_gcid not provided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID"
+
+        "403":
+          description: You don't have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: No ID query was set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::ID_QUERY"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::ID_QUERY"
+
+  /app/delete-receipt:
+    post:
+      tags:
+        - GDPR .apps
+      operationId: deleteCustomerReceipt.apps
+      summary: Delete end user receipt(s)
+      description: Delete the user's receipt(s) by their GCID
+      security:
+        - Auth_token: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteReceipt"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/DeleteReceipt"
+            example: |
+              <?xml version="1.0" encoding="UTF-8" ?>
+              <provider_gcid></provider_gcid>
+              <zeipt_receipt_transnr></zeipt_receipt_transnr>
+              <all_data>
+                <from_timestamp>2008-09-15T15:53:00+01</from_timestamp>
+                <to_timestamp>2008-09-15T15:53:00+01</to_timestamp>
+              </all_data>
+              <all_receipts>false</all_receipts>
+	
+
+
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteReceiptResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/DeleteReceiptResponse"
+              example: |
+                All responses are json
+
+        "204":
+          description: No receipts found.
+
+        "400":
+          description: provider_gcid not provided / Timestamps not valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID / BAD_REQUEST::TIMESTAMP"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "BAD_REQUEST::PROVIDER_GCID / BAD_REQUEST::TIMESTAMP"
+
+        "403":
+          description: You don't have access.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "DENIED::ACCESS"
+
+        "422":
+          description: Neither zeipt_receipt_transnr, time interval nor all_data was set.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+            application/xml:
+              example: |
+                All responses are json
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "MISSING::RECEIPT_QUERY"
+
+  /ignore:
+    post:
+      operationId: ignore
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+          application/xml:
+            example: |
+              <?xml version="1.0" encoding="UTF-8"?>
+              <ignore>
+              </ignore>
+
 components:
   schemas:
-    # RECEIPT SCHEME
-    Receipt:
+    Echo:
+      type: object
+      properties:
+        welcome:
+          type: string
+          example: welcome to zeipt services
+          description: You're successfully connected to Zeipt
+
+    Checkcustomer:
+      required:
+        - merchant
+      type: object
+      properties:
+        merchant:
+          type: object
+          description: The merchant making the request.
+          properties:
+            org_number:
+              type: string
+              example: "NO915271383MVA"
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
+              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+        zeipt_card_token:
+          type: string
+          example: ""
+          description: The customer's card token, typically received from the bank terminal.
+        email:
+          type: string
+          example: ""
+          description: The customer's email.
+        telephone:
+          type: object
+          description: The customer's phone number. Country calling code is required.
+          properties:
+            country_calling_code:
+              type: string
+              example: "+47"
+              description: E.123 standard. (https://en.wikipedia.org/wiki/E.123)
+            number:
+              type: string
+              example: ""
+              description: Phone number.
+
+        ui_qr_code:
+          type: string
+          example: ""
+          description: Value from the customer's QR code.
+
+        ui_bar_code:
+          type: string
+          example: ""
+          description: Value from the customer's bar code.
+
+    CheckcustomerResponse:
+      type: object
+      properties:
+        check_customer_transnr:
+          description: A unique string for the check request. Can be used for subsequent requests, so that the receipt will be delivered to the IDs that are true.
+          type: string
+          example: "p3D92kn4A7x9N6NnV1Yc"
+        zeipt_card_token:
+          default: false
+        email:
+          default: false
+        telephone:
+          default: false
+        ui_qr_code:
+          default: false
+        ui_bar_code:
+          default: false
+
+    ReceiptResponse:
+      type: object
+      properties:
+        zeipt_receipt_transnr:
+          type: string
+          example: mpg1W0ri6SozPklqeGjX
+          description: Our reference number for this successfully posted receipt.
+
+    RawReceiptResponse:
+      type: object
+      properties:
+        zeipt_receipt_transnr:
+          description: Our reference number for this successfully posted receipt.
+          type: string
+          example: mpg1W0ri6SozPklqeGjX
+
+    RegisterProviderGCID:
       type: object
       required:
-        - delivery_method
+        - provider_gcid
       properties:
-        reference:
-          type: "object"
-          description: The references of this receipt.
-          required:
-            - zeipt_receipt_v
-            - pos_org_nr
-            - pos_vat_nr
-            - pos_name
-          properties:
-            zeipt_receipt_v:
-              type: string
-              default: 0.89.0
-              description: The version of this receipt's Zeipt json file.
-            check_customer_transactionnr:
-              type: string
-              description: If the purchase was made with a registered Zeipt ID factor, this transaction number links the receipt to the customer.
-            register_customer_transactionnr:
-              type: string
-              description: If the customer was registered, this transaction number links the receipt to the registration before verifying the registration link.
-            reference_of_origin:
-              type: string
-              example: LIB3J4wz8Cdkskjyhlxl
-              description: The hash created between the POS, Zeipt and UI when transmitting the receipt from/to Zeipt as a certifier that this is the legal receipt.
-            reference_of_origin_old:
-              type: string
-              example: pEUDnr5Ytq6Y5GDlr6gO
-              description: Used to start event for UI that something has happened with the original receipt transfered to them. For example, the user has went back to the store and changed one of the article lines to another article (UI takes the old receipt and compare it to the new, and does the necassary update for the view).
-            pos_org_nr:
-              type: string
-              example: "915271383"
-              description: The org number of this POS.
-            pos_vat_nr:
-              type: string
-              example: MVA915271383
-              description: The vat number of this POS.
-            pos_name:
-              type: string
-              example: Posprovider
-              description: The name of this POS.
-            pos_v:
-              type: string
-              example: "1.0.0"
-              description: The version of this POS.
-        delivery_method:
-          type: "object"
-          description: How will the receipt be delivered to the customer.
-          properties:
-            email:
-              type: string
-              example: "example@mail.com"
-              description: The receipt may be sent to the customers email.
-            tlf_nr:
-              type: string
-              example: "99999999"
-              description: The receipt may be sent to the customers phone nr.
-            tlf_country_code:
-              type: string
-              example: "NO"
-              description: Tlf country code is required if the customer wants the receipt sent to his/her phone.
-            ui_qr_code:
-              type: string
-              example: "z5mbNSU1vFY4JKVPpN3E"
-              description: If the customer scanned a Zeipt generated QR code.
-            ui_bar_code:
-              type: string
-              example: "LVCLC2AlmYsbwSCIS0vf"
-              description: If the customer scanned a Zeipt generated bar code.
+        provider_gcid:
+          type: string
+          example: ""
+          description: This will be the future reference between the systems.
+
+    RegisterProviderGCIDResponse:
+      type: object
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+
+    DeleteProviderGCID:
+      type: object
+      required:
+        - provider_gcid
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+
+    DeleteProviderGCIDResponse:
+      type: object
+      properties:
+        deleted_provider_gcid:
+          type: string
+          example: ""
+
+    RegisterCard:
+      type: object
+      required:
+        - provider_gcid
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+          description: The user's ID reference.
+
+    RegisterWebhook:
+      type: object
+      required:
+        - webhook_url
+      properties:
+        webhook_url:
+          type: string
+          format: uri
+          example: https://myserver.com/send/callback/here
+          description: Your webhook URL
+        method:
+          type: string
+          default: "POST"
+        message_format:
+          type: string
+          default: "UTF-8"
+        security_type:
+          type: string
+          example: ""
+        security_value:
+          type: string
+          example: ""
+        port_number:
+          type: string
+          example: ""
+
+    RegisterWebhookResponse:
+      type: object
+      properties:
+        webook_url:
+          type: string
+          example: ""
+          description: Your webhook URL
+        overwrite:
+          type: boolean
+          default: false
+
+    FetchMessage:
+      type: object
+      required:
+        - message_id
+      properties:
+        message_id:
+          type: string
+          example: ""
+
+    FetchMessageResponse:
+      type: object
+      properties:
+        zeipt_receipt_transnr:
+          type: string
+        provider_gcids:
+          type: array
+          items:
+            type: object
+            properties:
+              provider_gcid:
+                example: ""
+        timestamp:
+          type: dateTime
+          example: ""
+        total_sum:
+          type: string
+          example: ""
         merchant:
-          type: "object"
-          description: Information about the merchant where the purchase was made.
+          type: object
           properties:
-            name:
+            org_number:
               type: string
-              example: "Storename"
-              description: Name of the store
-            org_nr:
+              example: "NO915271383MVA"
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
               type: string
-              example: "915271383"
-              description: Organization number of the store
-            vat_nr:
-              type: string
-              example: "MVA915271383"
-              description: The VAT number from the country the operating org number is registred in (if it is VAT registred).
-            country_code:
-              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+        logo_uri:
+          type: string
+          example: ""
+        purchase_location:
+          type: object
+          properties:
+            purchase_country_code:
               example: "NO"
-              description: The country where the org number of the operator of the store is registred.
+              type: string
             city:
-              type: string
               example: "Oslo"
-            zip_code:
               type: string
+            zip_code:
               example: "0254"
+              type: string
+            address:
+              example: "Veien 23"
+              type: string
+            store_name:
+              example: "Eplehuset"
+              type: string
+
+    DeleteWebhook:
+      type: object
+      properties:
+        webhook_url:
+          type: string
+          example: ""
+          description: URL to webhook you want to delete
+        all_webhooks:
+          type: boolean
+          default: false
+          description: Set to true to delete all your webhooks
+
+    DeleteWebhookResponse:
+      type: object
+      properties:
+        deleted_webhooks:
+          type: array
+          items:
+            type: string
+            example: "webhook_url"
+
+    RegisterId:
+      type: object
+      required:
+        - provider_gcid
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+          description: The user's ID reference.
+        card:
+          type: object
+          description: |
+            These values are given by requesting towards Verifone's system with Zeipt's <b>[VAS ID]</b>.
+            <br>
+            Contact sebastian@zeipt.com.
+          properties:
+            token_provider:
+              type: string
+              example: ""
+              description: The provider generating the token.
+            zeipt_card_token:
+              type: string
+              example: ""
+              description: The customer's card token generated by using Zeipt's <b>[VAS ID]</b>.
+            token_expiration_date:
+              type: dateTime
+              description: The expiration date of the token, will be used as the expiration date of the card. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh)
+              example: "2008-09-15T15:53:00+01"
+            last_digits:
+              type: string
+              description: The four last digits of the card number.
+              example: "4444"
+            card_type:
+              type: string
+              example: ""
+              description: The payment type of the card (Visa, MC, Amex supported).
+
+        bank_account:
+          type: object
+          description: |
+            Choose either the user's tokenized bankaccount or the bank account number.
+          properties:
+            token_provider:
+              type: string
+              example: ""
+              description: The provider generating the token.
+            bank_account_token:
+              type: string
+              example: ""
+              description: The customer's bank account token, typically received from the bank and or as PAR from the card scheme.
+            bank_account_number:
+              type: string
+              example: ""
+              description: The customer's bank account number.
+
+        email:
+          type: string
+          example: ""
+          description: The customer's email.
+        telephone:
+          type: object
+          description: The customer's phone number. All lines in this object needs to be filled for the phone number to be registered.
+          properties:
+            country_calling_code:
+              type: string
+              example: "+47"
+              description: E.123 standard. (https://en.wikipedia.org/wiki/E.123)
+            number:
+              type: string
+              example: ""
+              description: Phone number.
+        ui_qr_code:
+          type: string
+          example: ""
+          description: The value created from scanning the QR-code in the customers view.
+        ui_bar_code:
+          type: string
+          example: ""
+          description: The value created from scanning the bar-code in the customers view.
+
+    RegisterIdResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          example: ""
+          description: The email address that was registered for the user.
+        telephone:
+          type: string
+          example: ""
+          description: The phone number that was registered for the user.
+        zeipt_card_transnr:
+          type: string
+          example: ""
+          description: The Zeipt generated string for the registration of this card.
+        zeipt_bank_account_transnr:
+          type: string
+          example: ""
+          description: The Zeipt generated string for the registration of this bank account.
+        ui_qr_code:
+          type: string
+          example: ""
+          description: The QR code string that was registered for the user.
+        ui_bar_code:
+          type: string
+          example: ""
+          description: The bar code string that was registered for the user.
+
+    DeleteId:
+      type: object
+      required:
+        - provider_gcid
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+          description: The user's ID reference.
+        card:
+          type: object
+          properties:
+            zeipt_card_transnr:
+              type: string
+              example: ""
+              description: The card to delete.
+            all_cards:
+              type: boolean
+              default: false
+              description: Set to true to delete all.
+        bank_account:
+          type: object
+          properties:
+            zeipt_bank_account_transnr:
+              type: string
+              example: ""
+              description: The bank account token to delete.
+            all_bank_accounts:
+              type: boolean
+              default: false
+              description: Set to true to delete all.
+        email:
+          type: object
+          properties:
             address:
               type: string
-              example: "Veien 23"
-            phone:
+              example: ""
+              description: The email address to delete.
+            all_emails:
+              type: boolean
+              default: false
+              description: Set to true to delete all.
+        telephone:
+          type: object
+          properties:
+            country_calling_code:
               type: string
-              example: "99999999"
-              description: The phone number to contact the store.
+              example: "+47"
+              description: Related to the number to delete. E.123 standard. (https://en.wikipedia.org/wiki/E.123)
+            number:
+              type: string
+              example: ""
+              description: The number to delete.
+            all_telephone_numbers:
+              type: boolean
+              default: false
+              description: Set to true to delete all.
+        qr_code:
+          type: object
+          properties:
+            ui_qr_code:
+              type: string
+              example: ""
+            all_qr_codes:
+              type: boolean
+              default: false
+              description: Set to true to delete all.
+        bar_code:
+          type: object
+          properties:
+            ui_bar_code:
+              type: string
+              example: ""
+            all_bar_codes:
+              type: boolean
+              default: false
+              description: Set to true to delete all.
+
+    DeleteIdResponse:
+      type: object
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+        deleted_cards:
+          type: array
+          items:
+            type: string
+            example: "zeipt_card_transnr"
+
+        deleted_bank_accounts:
+          type: array
+          items:
+            type: string
+            example: "zeipt_bank_account_transnr"
+
+        deleted_email_addresses:
+          type: array
+          items:
+            type: string
+            example: "email_address"
+
+        deleted_telephone_numbers:
+          type: array
+          items:
+            type: string
+            example: "telephone"
+
+        deleted_qr_codes:
+          type: array
+          items:
+            type: string
+            example: "ui_qr_code"
+
+        deleted_bar_codes:
+          type: array
+          items:
+            type: string
+            example: "ui_bar_code"
+
+    RegisterCardResponse:
+      type: object
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+          description: The GCID set by the provider for future reference
+        zeipt_card_transnr:
+          type: string
+          example: ""
+          description: The unique string for the registration of this card.
+
+    FetchCard:
+      required:
+        - provider_gcid
+      type: object
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+          description: The ID of the customer to retrieve data from.
+        zeipt_card_transnr:
+          type: string
+          exmaple: vG5PhdXKDKrYC64vQ3zz
+          description: Fetch every details of the card registered under this value for this customer.
+        all_cards:
+          type: boolean
+          example: false
+          description: Fetch all of the user's cards and their details.
+
+    FetchCardResponse:
+      type: object
+      properties:
+        cards:
+          type: array
+          items:
+            type: object
+            properties:
+              card_type:
+                type: string
+                example: visa
+              last_digits:
+                type: string
+                example: "9999"
+              expiration_date:
+                type: string
+                example: 06/2019
+              token_expiration_date:
+                type: dateTime
+                description: The expiration date of the token, will be used as the expiration date of the card. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+                example: "2008-09-15T15:53:00+01"
+
+    FetchReceiptCashier:
+      required:
+        - merchant
+      type: object
+      properties:
+        merchant:
+          type: object
+          description: The merchant making the request.
+          properties:
+            org_number:
+              type: string
+              example: "NO915271383MVA"
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
+              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+        zeipt_receipt_transnr:
+          type: string
+          example: mpg1W0ri6SozPklqeGjX
+          description: Fetch receipt by the Zeipt generated receipt number.
+        all_data:
+          type: object
+          description: Fetch all receipt data from this merchant filtered by timestamp.
+          properties:
+            from_timestamp:
+              type: dateTime
+              description: ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              example: "2008-09-15T15:53:00+01"
+            to_timestamp:
+              type: dateTime
+              description: ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              example: "2008-09-15T15:53:00+01"
+
+    FetchReceipt:
+      required:
+        - provider_gcid
+      type: object
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+          description: The ID of the customer to retrieve data from.
+        zeipt_receipt_transnr:
+          type: string
+          example: mpg1W0ri6SozPklqeGjX
+          description: Fetch receipt by the Zeipt generated receipt number.
+        all_data:
+          type: object
+          description: Fetch all receipt data from this customer filtered by timestamp.
+          properties:
+            from_timestamp:
+              type: dateTime
+              description: ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              example: "2008-09-15T15:53:00+01"
+            to_timestamp:
+              type: dateTime
+              description: ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              example: "2008-09-15T15:53:00+01"
+
+    DeleteCashierReceipt:
+      required:
+        - merchant
+      type: object
+      properties:
+        merchant:
+          type: object
+          properties:
+            org_number:
+              type: string
+              example: "NO915271383MVA"
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
+              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+        zeipt_receipt_transnr:
+          type: string
+          example: ""
+          description: The "zeipt_receipt_transnr" of the receipt to be deleted.
+        all_data:
+          type: object
+          properties:
+            from_timestamp:
+              type: dateTime
+              example: "2008-09-15T15:53:00+01"
+            to_timestamp:
+              type: dateTime
+              example: "2008-09-15T15:53:00+01"
+        all_receipts:
+          type: boolean
+          default: false
+
+    DeleteCashierReceiptResponse:
+      type: object
+      properties:
+        deleted_receipts:
+          type: array
+          items:
+            type: string
+            description: The "zeipt_receipt_transnr" of the deleted receipt.
+            example: zeipt_receipt_transnr
+
+    DeleteCashierMerchant:
+      required:
+        - merchant
+      type: object
+      properties:
+        merchant:
+          type: object
+          properties:
+            org_number:
+              type: string
+              example: "NO915271383MVA"
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
+              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+
+    DeleteCashierMerchantResponse:
+      type: object
+      properties:
+        deleted_merchant:
+          type: object
+          properties:
+            org_number:
+              type: string
+              example: ""
+            merchant_country_code:
+              type: string
+              example: ""
+
+    DeleteReceipt:
+      required:
+        - provider_gcid
+      type: object
+      properties:
+        provider_gcid:
+          type: string
+          example: ""
+          description: The ID of the customer to delete data from.
+        zeipt_receipt_transnr:
+          type: string
+          example: ""
+          description: The "zeipt_receipt_transnr" of the receipt to be deleted.
+        all_data:
+          type: object
+          properties:
+            from_timestamp:
+              type: dateTime
+              example: "2008-09-15T15:53:00+01"
+            to_timestamp:
+              type: dateTime
+              example: "2008-09-15T15:53:00+01"
+        all_receipts:
+          type: boolean
+          default: false
+
+    DeleteReceiptResponse:
+      type: object
+      properties:
+        deleted_receipts:
+          type: array
+          items:
+            type: string
+            example: zeipt_receipt_transnr
+
+    Receipt:
+      type: object
+      properties:
+        reference:
+          type: object
+          description: Zeipt version and references generated from other endpoints.
+          required:
+            - zeipt_receipt_v
+          properties:
+            zeipt_receipt_v:
+              default: 0.97.3
+              type: string
+              description: The version of this Zeipt receipt format. This defines how Zeipt should parse the current receipt.
+            check_customer_transnr:
+              example: ""
+              type: string
+              description: The returned reference number from the “check customer”-endpoint. If given, the receipt will be sent to the customer's available ID(s).
+            invite_customer_transnr:
+              example: ""
+              type: string
+              description: <i><b>(Under development)</b></i> <br> The returned reference number from the “invite customer”-endpoint. Connects the customer’s stated ID with this receipt.
+            return:
+              type: object
+              description: <i><b>(Under development)</b></i> <br> In case of return, these fields must be filled in order to update the original receipt.
+              properties:
+                reference_of_origin:
+                  example: ""
+                  type: string
+                  description: The "zeipt_receipt_transnr" of the receipt to be modified.
+                zeipt_linkcode_transnr:
+                  example: ""
+                  type: string
+                  description: <i><b>(Under development)</b></i> <br> The returned reference number from the “handle return”-endpoint. This verifies that the receipt should be updated.
+            coupons:
+              type: array
+              description: Coupons used in the transaction.
+              items:
+                type: object
+                properties:
+                  coupon_number:
+                    example: "Q4YHULncMT"
+                    type: string
+                    description: The reference of the coupon that has been used.
+        direct_delivery:
+          type: object
+          description: |
+            Send the receipt directly to the customer's ID.
+            Delivery of digital receipt is not guranteed, unlike with the use of "check_customer_transnr".
+          properties:
+            direct_delivery:
+              type: boolean
+              default: false
+              description: |
+                If true, the receipt may be sent directly to the customer email address and/or SMS, 
+                in addition to the UI's where these IDs are registered.
             email:
               type: string
-              example: "example@mail.com"
-              description: The email address the store wants to be reached at.
+              example: ""
+              description: ID stated by the customer to receive receipt as a <b>direct delivery</b> to the email address and/or as an <b>app delivery</b>.
+            telephone:
+              type: object
+              description: ID stated by the customer to receive receipt as a <b>direct delivery</b> to the phone number and/or as an <b>app delivery</b>. (Both following fields must be filled out)
+              properties:
+                country_calling_code:
+                  type: string
+                  example: "+47"
+                  description: E.123 standard. (https://en.wikipedia.org/wiki/E.123)
+                number:
+                  type: string
+                  example: ""
+                  description: The customer's mobile phone number.
+            zeipt_card_token:
+              type: string
+              example: ""
+              description: Reference generated by the customer's card from the bank terminal to be used as an ID for <b>app delivery</b>.
+            ui_qr_code:
+              type: string
+              example: ""
+              description: Reference generated by scanning the customer's app QR code to be used as an ID for <b>app delivery</b>.
+            ui_bar_code:
+              type: string
+              example: ""
+              description: Reference generated by scanning the customer's app barcode to be used as an ID for <b>app delivery</b>.
+        merchant:
+          type: object
+          description: Description of the store where the purchase was made.
+          required:
+            - org_number
+            - merchant_country_code
+          properties:
+            org_number:
+              type: string
+              example: ""
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
+              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+            purchase_location:
+              type: object
+              description: The store where the purchase was made and its location.
+              required:
+                - purchase_country_code
+                - city
+                - zip_code
+                - address
+                - store_name
+              properties:
+                purchase_country_code:
+                  type: string
+                  example: "NO"
+                city:
+                  type: string
+                  example: "Oslo"
+                zip_code:
+                  type: string
+                  example: "0254"
+                address:
+                  type: string
+                  example: "Veien 23"
+                store_name:
+                  type: string
+                  example: "Shop&Go"
+                  description: The name of the store.
+                cashier_number:
+                  type: string
+                  example: "543"
+                  description: The identifier of the cashier.
+                store_number:
+                  type: string
+                  example: "22"
+                  description: The identifier of the store.
+            telephone:
+              type: object
+              description: The store's phone number.
+              properties:
+                country_calling_code:
+                  type: string
+                  example: "+47"
+                  description: E.123 standard. (https://en.wikipedia.org/wiki/E.123)
+                number:
+                  type: string
+                  example: "92696846"
+            email:
+              type: string
+              example: example@mail.com
+              description: The store's email address.
             website:
               type: string
-              example: "www.example.com"
-              description: The website address that the operating store wants to display on the receipt.
-            logo:
-              type: string
-              example: "www.example.com/logo.png"
-              description: URL to the logo of the store
+              example: www.example.com
+              description: The store's website.
+            travel_reference:
+              type: object
+              description: References in case of travel.
+              properties:
+                travel_driver_id:
+                  type: string
+                  example: "653"
+                  description: ID of the driver.
+                travel_driver_name:
+                  type: string
+                  example: Jeppe Skaar
+                  description: Name of the driver.
+                travel_driver_certification:
+                  type: string
+                  example: FB0YCFgffW
+                  description: The national vehicle certification number for the driver.
+                travel_company_certification:
+                  type: string
+                  example: tlDCkIyOEZ
+                  description: The national certification number for the company.
+                car_license_plate:
+                  type: string
+                  example: AF46035
+                  description: The license plate of the vehicle.
         receipt:
-          type: "object"
-          description: Receipt reference
+          type: object
+          description: The general reference and legal data of the receipt.
+          required:
+            - receipt_number
+            - receipt_type
+            - timestamp
           properties:
-            receipt_nr:
+            receipt_number:
               type: string
-              example: "445768"
-              description: The receipt number given by the POS
+              example: ""
+              description: Your own receipt number for the receipt.
             receipt_type:
               type: string
+              description: The annotation on what type of receipt this is.
               enum:
                 - Elektronisk salgskvittering
                 - Elektronisk returkvittering
                 - Elektronisk proforma-kvittering
                 - Elektronisk treningskvittering
                 - Elektronisk utleveringsseddel
-            pos_id:
-              type: string
-              example: "4578"
-              description: The unique POS ID given to the receipt by its POS.
-            date:
+            timestamp:
               type: dateTime
-              example: "2018-09-14T13:36:43Z"
-              description: Date and time for the transaction
+              description: Date and time for the receipt. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              example: "2008-09-15T15:53:00+01"
         sum:
-          type: "object"
-          description: The sum of the receipt. Including discounts, recycling fees, taxes and tip. May also be money back.
+          type: object
+          description: The final sums of the receipt. Includes discounts, recycling fees, taxes and tip. May also be money back.
+          required:
+            - total_sum
+            - total_vat_amount
           properties:
-            total:
-              type: double
-              example: 10.00
-              description: The total sum after all discounts, recycling fees and taxes, plus tip.
-            currency:
+            total_sum_without_vat_and_substractions:
+              type: string
+              example: "40.6"
+              description: The total sum, <b>not including</b> discounts, recycling fees, tip, returns and taxes.
+            total_sum_without_vat:
+              type: string
+              example: "38.1"
+              description: The total sum <b>including</b> all discounts, recycling fees, tip and returns, <br/><b>not including</b> taxes.
+            total_vat_amount:
+              type: string
+              example: "9.53"
+              description: The total sum of the VAT.
+            total_sum:
+              type: string
+              example: "47.63"
+              description: The total sum <b>including</b> all discounts, recycling fees, tip, returns and taxes.
+            total_tip_amount:
+              type: string
+              example: "2.5"
+              description: The total sum of the tip to the operator.
+            total_currency:
               type: string
               example: "NOK"
-            vat_codes:
+              description: The currency set by the merchant on the purchase.
+            total_vat_name:
               type: string
-              example: "1"
-              description: Summary of what codes has been used for the VAT.
-            vat:
-              type: double
-              example: 10.00
-              description: The total sum of the VAT.
-            without_vat_discount:
-              type: double
-              example: 0.00
-              description: The total sum plus tip, rycycling fees before taxes.
-            after_return_without_vat_discount:
-              type: double
-              example: 0.00
-              description: The total sum plus tip, rycycling fees and returns, discounts (before taxes).
-            recycling_fee:
-              type: double
-              example: 0.00
-              description: Used only when recycling fee is relevant on some products.
-            tip:
-              type: double
-              example: 0.00
-              description: The total sum of the tip to the employee (if this is supported).
-            discount_amount:
-              type: double
-              example: 0.00
-              description: Only used for discounts summary.
-            returns_amount:
-              type: double
-              example: 0.00
-              description: Only used for returns summary.
-            recycling_moneyback:
-              type: double
-              example: 0.00
-              description: Used only when recycling return has been scanned in the store for either cash out or part payment.
-            money_back:
-              type: double
-              example: 0.00
-              description: Money back if you pay more and get paid back.
-            money_back_method:
-              type: string
-              description: What medium has been used by the customer to get their money back.
-              enum:
-                - giftcard
-                - cash
-                - back-to-card
+              example: MVA
+              description: The local abbreviation of the tax rate.
+            global_discounts:
+              type: array
+              description: Discounts on the receipt. Included in total_sum and total_sum_without_vat.
+              items:
+                type: object
+                properties:
+                  description:
+                    description: About the discount.
+                    type: string
+                    example: "GuL9pA"
+                  amount:
+                    description: Amount of discount.
+                    type: string
+                    example: "2.5"
+                  percentage:
+                    description: Percentage of discount.
+                    type: string
+                    example: "6.2"
         articles:
           type: array
-          description: Each and every article in the receipt
+          description: Each article in the receipt. Either sale or return.
           items:
             type: object
             properties:
               art_number:
                 type: string
                 example: "230023"
-                description: The number of the article that was given by the POS and given to this object as a whole. Every line in the object is a referent to this.
-              code:
+                description: The identifier of this article.
+              art_reference_another_art:
                 type: string
-                example: "r"
-                description: Article code to know what action is taken on this article, for example return or change, money back etc. Empty for a normal purchase (What is to be shown in the view for these codes could be fetched before in an RestAPi).
+                example: ""
+                description: "Used when suitable, An article can be split up on many article objects such as: When there is different VAT rates for different parts of the article."
+              return:
+                type: boolean
+                default: false
+                description: Set this to true if the associated article described in this object is a return.
               name:
                 type: string
-                example: "Levis Jeans"
-                description: Name of the article.
+                example: "Taxi standard tax"
+              image_uri:
+                type: string
+                example: ""
+                description: Image uri for article thumbnail.
               art_saft_articlegroup_id:
                 type: string
                 example: "11"
-                description: The article group in norwegian SAFT format
+                description: The article group in SAFT format.
               quantity:
-                type: double
-                example: 1.00
-                description: The amount of quantity of that article.
+                type: string
+                example: "11.4"
               quantity_type:
                 type: string
-                description: Code to be used to define the article quantity type.
+                description: Defines the type of quantity. Metric or imperial system is enforced.
+                example: km
                 enum:
                   - kg
                   - pc
                   - hg
                   - st
-              vat_code:
+              quantity_price_without_vat:
+                type: string
+                example: "5.315"
+                description: Price of one article, <b>not including</b> VAT.
+              art_vat_code:
                 type: string
                 example: "1"
-                description: The code of the VAT on this product (What is to be shown in % view for these codes could be fetched before in an RestAPI).
+                description: The national VAT code of this article.
               art_vat_name:
                 type: string
-                example: "fritt"
-                description: Name of VAT for this art number
+                example: "MVA"
+                description: The local abbreviation of the tax rate for this article.
               art_vat_percentage:
-                type: double
-                example: 25.00
-                description: Percentage for this art number
-              quantity_price_without_vat:
-                type: double
-                example: 8.00
-                description: The per article piece price with VAT.
-              sum_total_without_vat:
-                type: double
-                example: 8.00
-                description: The total article price after quantity calculation without VAT.
-              sum_total_before:
-                type: double
-                example: 8.00
-                description: Sum for the article after quantity calculations has been done + discounts and recycling fee before taxes.
-              sum_vat:
-                type: double
-                example: 2.00
-                description: The VAT amount for this product.
-              sum_total:
-                type: double
-                example: 10.00
-                description: Sum for the article after quantity calculations has been done + discounts and recycling fee after taxes.
-              discount_amount:
-                type: double
-                example: 0.00
-                description: Only used for discounts that triggers on the article_number.
+                type: string
+                example: "25"
+                description: Percentage of VAT on this article.
+              art_sum_without_vat_and_substractions:
+                type: string
+                example: "60.6"
+                description: The total sum of article, <b>not including</b> discounts, recycling fees, returns and taxes.
+              art_sum_without_vat:
+                type: string
+                example: "40.6"
+                description: The total sum of article, <b>including</b> all discounts, recycling fees and returns, <br/><b>not including</b> taxes.
+              art_vat_amount:
+                type: string
+                example: "10.15"
+                description: The total VAT amount of article.
+              art_sum:
+                type: string
+                example: "53.25"
+                description: The total sum of article.
+
+              discounts:
+                type: array
+                description: Discounts on the article
+                items:
+                  type: object
+                  properties:
+                    description:
+                      type: string
+                      example: "Q4YHULncMT"
+                      description: About the discount.
+                    amount:
+                      description: Amount of discount.
+                      type: string
+                      example: "20"
+                    percentage:
+                      description: Percentage of discount.
+                      type: string
+                      example: "33"
+
               recycling_fee:
-                type: double
-                example: 0.00
-                description: Used only when recycling fee is relevant on this product.
+                type: string
+                example: "2.5"
+                description: The total recycling fee of article.
+
+              travel:
+                type: object
+                description: Used in case of travel to describe related lengths and references.
+                properties:
+                  car_flight_reference_id:
+                    type: string
+                    example: "rCkBHb5yUA"
+                    description: The reference id of the vehicle or flight.
+                  start_time:
+                    type: string
+                    example: "2019-04-05T14:30:23+01"
+                    description: The start time of the journey.
+                  end_time:
+                    type: string
+                    example: "2019-04-05T14:47:38+01"
+                    description: The end time of the journey.
+                  start_location:
+                    type: string
+                    example: "Nedre Vollgate 3"
+                    description: The start location.
+                  end_location:
+                    type: string
+                    example: "Skallumhagen 48"
+                    description: The end location.
+                  distance_value:
+                    type: string
+                    example: "11.4"
+                    description: Distance of journey
+                  distance_value_definition:
+                    type: string
+                    example: "km"
+                    description: The definition of the distance value. Metric or imperial system is enforced.
+                    enum:
+                      - km
+                      - miles
         payments:
           type: array
-          description: Types of payments done for this receipt. Could be multiple.
+          description: Payment methods and their event description.
+          items:
+            type: object
+            required:
+              - payment_method
+              - currency
+              - timestamp
+              - payment_amount
+              - payment_vat_amount
+            properties:
+              payment_method:
+                type: string
+                description: Type of payment method.
+                example: credit card
+                enum:
+                  - cash
+                  - credit_card
+                  - recycling_money
+                  - gift_card
+              payment_method_type:
+                type: string
+                description: Specify payment method.
+                enum:
+                  - bankaxept
+                  - visa
+              currency:
+                type: string
+                example: SEK
+                description: The currency used in this payment transaction. If it differs from the “total_currency” the conversion rate is expected to be used.
+              exchange_rate:
+                type: string
+                example: "1.1"
+                description: Exchange rate at the time of the transaction.
+              moneyback:
+                type: boolean
+                default: false
+                description: If true, this payment goes back to the associated payment method.
+              masked_pan:
+                type: string
+                example: "1234"
+                description: The last four digits of the customer's card.
+              gift_number:
+                type: string
+                example: "201712315678"
+                description: The reference number of the gift medium that has been used in the transaction.
+              timestamp:
+                type: dateTime
+                example: "2019-04-05T14:48:38+01"
+                description: Time for the receipt. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              bank_terminal_id:
+                type: string
+                example: "12329911"
+                description: The national number of the bank terminal for the payment infrastructure.
+              national_merchant_number:
+                type: string
+                example: "324295"
+                description: The national number of the seller using this bankterminal for the payment infrastructure.
+              ref_nr:
+                type: string
+                example: "567734 443372 IA1"
+              aid_nr:
+                type: string
+                example: "D5780000021010"
+              tvr_nr:
+                type: string
+                example: "8000048000"
+              tsi_nr:
+                type: string
+                example: "6800"
+              response_code:
+                type: string
+                example: "00"
+              tip_amount:
+                type: string
+                example: "2.5"
+                description: Amount of tip in this payment.
+              payment_vat_amount:
+                type: string
+                example: "10.48"
+                description: The VAT amount of this payment.
+              payment_amount:
+                type: string
+                example: "55.14"
+                description: The total amount paid in this transaction, including VAT.
+        extra_logic:
+          type: object
+          description: Extra values that can benefit the user experience of the receipt.
+          properties:
+            receipt_bar_code:
+              type: object
+              description: The bar code to be visible on the receipt.
+              properties:
+                encoding:
+                  type: string
+                  example: "interleaved2of5"
+                  description: "What type of encoding."
+                value:
+                  type: string
+                  example: "Z1n0flmEOO"
+                  description: "Data of the barcode"
+                display_value:
+                  type: string
+                  example: "15623489202"
+                  description: "The text to be shown below"
+            receipt_qr_url:
+              type: string
+              example: api.zeipt.io/a792d637695ee43db845a8c940a3d2c1.html
+              description: The QR code to be visible on the receipt.
+            return_policy:
+              type: string
+              maxLength: 200
+              example: 30 days return
+              description: Text describing the return policy to be shown on the receipt.
+            customer_first_name:
+              type: string
+              example: John
+            customer_surname:
+              type: string
+              example: Watson
+            customer_telephone:
+              type: object
+              properties:
+                country_calling_code:
+                  type: string
+                  example: "+47"
+                number:
+                  type: string
+                  example: ""
+            seller_id:
+              type: string
+              example: "444"
+              description: The ID of the seller.
+            seller_name:
+              type: string
+              example: Sibban
+              description: The name of the seller.
+            operator_id:
+              type: string
+              example: "432"
+              description: The ID of the operator.
+            operator_name:
+              type: string
+              example: Sebastian
+              description: The name of the operator.
+            operator_text:
+              type: string
+              maxLength: 200
+              example: You have been serviced by
+              description: Operator's message to be displayed on the receipt.
+            cashier_goodbye_message:
+              type: string
+              maxLength: 200
+              example: "Thank you, come again"
+              description: Message to be displayed at the bottom of receipt. The only line allowed to be longer than 60 characters.
+            opening_hours:
+              type: string
+              maxLength: 200
+              example: "Man-Fri: 07.00-24.00 Sat-Sun: 08.00-24.00"
+              description: Opening hours of associated store.
+
+    CashierReceipt:
+      type: object
+      properties:
+        reference:
+          type: object
+          description: Zeipt version and references generated from other endpoints.
+          required:
+            - zeipt_receipt_v
+          properties:
+            zeipt_receipt_v:
+              default: 0.97.3
+              type: string
+              description: The version of this Zeipt receipt format. This defines how Zeipt should parse the current receipt.
+            check_customer_transnr:
+              example: ""
+              type: string
+              description: The returned reference number from the “check customer”-endpoint. If given, the receipt will be sent to the customer's available ID(s).
+            invite_customer_transnr:
+              example: ""
+              type: string
+              description: <i><b>(Under development)</b></i> <br> The returned reference number from the “invite customer”-endpoint. Connects the customer’s stated ID with this receipt.
+            return:
+              type: object
+              description: <i><b>(Under development)</b></i> <br> In case of return, these fields must be filled in order to update the original receipt.
+              properties:
+                reference_of_origin:
+                  example: ""
+                  type: string
+                  description: The "zeipt_receipt_transnr" of the receipt to be modified.
+                zeipt_linkcode_transnr:
+                  example: ""
+                  type: string
+                  description: <i><b>(Under development)</b></i> <br> The returned reference number from the “handle return”-endpoint. This verifies that the receipt should be updated.
+            coupons:
+              type: array
+              description: Coupons used in the transaction.
+              items:
+                type: object
+                properties:
+                  coupon_number:
+                    example: "Q4YHULncMT"
+                    type: string
+                    description: The reference of the coupon that has been used.
+        merchant:
+          type: object
+          description: Description of the store where the purchase was made.
+          required:
+            - org_number
+            - merchant_country_code
+          properties:
+            org_number:
+              type: string
+              example: ""
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
+              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+            purchase_location:
+              type: object
+              description: The store where the purchase was made and its location.
+              required:
+                - purchase_country_code
+                - city
+                - zip_code
+                - address
+                - store_name
+              properties:
+                purchase_country_code:
+                  type: string
+                  example: "NO"
+                city:
+                  type: string
+                  example: "Oslo"
+                zip_code:
+                  type: string
+                  example: "0254"
+                address:
+                  type: string
+                  example: "Veien 23"
+                store_name:
+                  type: string
+                  example: "Shop&Go"
+                  description: The name of the store.
+                cashier_number:
+                  type: string
+                  example: "543"
+                  description: The identifier of the cashier.
+                store_number:
+                  type: string
+                  example: "22"
+                  description: The identifier of the store.
+            telephone:
+              type: object
+              description: The store's phone number.
+              properties:
+                country_calling_code:
+                  type: string
+                  example: "+47"
+                  description: E.123 standard. (https://en.wikipedia.org/wiki/E.123)
+                number:
+                  type: string
+                  example: "92696846"
+            email:
+              type: string
+              example: example@mail.com
+              description: The store's email address.
+            website:
+              type: string
+              example: www.example.com
+              description: The store's website.
+            travel_reference:
+              type: object
+              description: References in case of travel.
+              properties:
+                travel_driver_id:
+                  type: string
+                  example: "653"
+                  description: ID of the driver.
+                travel_driver_name:
+                  type: string
+                  example: Jeppe Skaar
+                  description: Name of the driver.
+                travel_driver_certification:
+                  type: string
+                  example: FB0YCFgffW
+                  description: The national vehicle certification number for the driver.
+                travel_company_certification:
+                  type: string
+                  example: tlDCkIyOEZ
+                  description: The national certification number for the company.
+                car_license_plate:
+                  type: string
+                  example: AF46035
+                  description: The license plate of the vehicle.
+        receipt:
+          type: object
+          description: The general reference and legal data of the receipt.
+          required:
+            - receipt_number
+            - receipt_type
+            - timestamp
+          properties:
+            receipt_number:
+              type: string
+              example: ""
+              description: Your own receipt number for the receipt.
+            receipt_type:
+              type: string
+              description: The annotation on what type of receipt this is.
+              enum:
+                - Elektronisk salgskvittering
+                - Elektronisk returkvittering
+                - Elektronisk proforma-kvittering
+                - Elektronisk treningskvittering
+                - Elektronisk utleveringsseddel
+            timestamp:
+              type: dateTime
+              description: Date and time for the receipt. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              example: "2008-09-15T15:53:00+01"
+        sum:
+          type: object
+          description: The final sums of the receipt. Includes discounts, recycling fees, taxes and tip. May also be money back.
+          required:
+            - total_sum
+            - total_vat_amount
+          properties:
+            total_sum_without_vat_and_substractions:
+              type: string
+              example: "40.6"
+              description: The total sum, <b>not including</b> discounts, recycling fees, tip, returns and taxes.
+            total_sum_without_vat:
+              type: string
+              example: "38.1"
+              description: The total sum <b>including</b> all discounts, recycling fees, tip and returns, <br/><b>not including</b> taxes.
+            total_vat_amount:
+              type: string
+              example: "9.53"
+              description: The total sum of the VAT.
+            total_sum:
+              type: string
+              example: "47.63"
+              description: The total sum <b>including</b> all discounts, recycling fees, tip, returns and taxes.
+            total_tip_amount:
+              type: string
+              example: "2.5"
+              description: The total sum of the tip to the operator.
+            total_currency:
+              type: string
+              example: "NOK"
+              description: The currency set by the merchant on the purchase.
+            total_vat_name:
+              type: string
+              example: MVA
+              description: The local abbreviation of the tax rate.
+            global_discounts:
+              type: array
+              description: Discounts on the receipt. Included in total_sum and total_sum_without_vat.
+              items:
+                type: object
+                properties:
+                  description:
+                    description: About the discount.
+                    type: string
+                    example: "GuL9pA"
+                  amount:
+                    description: Amount of discount.
+                    type: string
+                    example: "2.5"
+                  percentage:
+                    description: Percentage of discount.
+                    type: string
+                    example: "6.2"
+        articles:
+          type: array
+          description: Each article in the receipt. Either sale or return.
+          items:
+            type: object
+            properties:
+              art_number:
+                type: string
+                example: "230023"
+                description: The identifier of this article.
+              art_reference_another_art:
+                type: string
+                example: ""
+                description: "Used when suitable, An article can be split up on many article objects such as: When there is different VAT rates for different parts of the article."
+              return:
+                type: boolean
+                default: false
+                description: Set this to true if the associated article described in this object is a return.
+              name:
+                type: string
+                example: "Taxi standard tax"
+              image_uri:
+                type: string
+                example: ""
+                description: Image uri for article thumbnail.
+              art_saft_articlegroup_id:
+                type: string
+                example: "11"
+                description: The article group in SAFT format.
+              quantity:
+                type: string
+                example: "11.4"
+              quantity_type:
+                type: string
+                description: Defines the type of quantity. Metric or imperial system is enforced.
+                example: km
+                enum:
+                  - kg
+                  - pc
+                  - hg
+                  - st
+              quantity_price_without_vat:
+                type: string
+                example: "5.315"
+                description: Price of one article, <b>not including</b> VAT.
+              art_vat_code:
+                type: string
+                example: "1"
+                description: The national VAT code of this article.
+              art_vat_name:
+                type: string
+                example: "MVA"
+                description: The local abbreviation of the tax rate for this article.
+              art_vat_percentage:
+                type: string
+                example: "25"
+                description: Percentage of VAT on this article.
+              art_sum_without_vat_and_substractions:
+                type: string
+                example: "60.6"
+                description: The total sum of article, <b>not including</b> discounts, recycling fees, returns and taxes.
+              art_sum_without_vat:
+                type: string
+                example: "40.6"
+                description: The total sum of article, <b>including</b> all discounts, recycling fees and returns, <br/><b>not including</b> taxes.
+              art_vat_amount:
+                type: string
+                example: "10.15"
+                description: The total VAT amount of article.
+              art_sum:
+                type: string
+                example: "53.25"
+                description: The total sum of article.
+
+              discounts:
+                type: array
+                description: Discounts on the article
+                items:
+                  type: object
+                  properties:
+                    description:
+                      type: string
+                      example: "Q4YHULncMT"
+                      description: About the discount.
+                    amount:
+                      description: Amount of discount.
+                      type: string
+                      example: "20"
+                    percentage:
+                      description: Percentage of discount.
+                      type: string
+                      example: "33"
+
+              recycling_fee:
+                type: string
+                example: "2.5"
+                description: The total recycling fee of article.
+
+              travel:
+                type: object
+                description: Used in case of travel to describe related lengths and references.
+                properties:
+                  car_flight_reference_id:
+                    type: string
+                    example: "rCkBHb5yUA"
+                    description: The reference id of the vehicle or flight.
+                  start_time:
+                    type: string
+                    example: "2019-04-05T14:30:23+01"
+                    description: The start time of the journey.
+                  end_time:
+                    type: string
+                    example: "2019-04-05T14:47:38+01"
+                    description: The end time of the journey.
+                  start_location:
+                    type: string
+                    example: "Nedre Vollgate 3"
+                    description: The start location.
+                  end_location:
+                    type: string
+                    example: "Skallumhagen 48"
+                    description: The end location.
+                  distance_value:
+                    type: string
+                    example: "11.4"
+                    description: Distance of journey
+                  distance_value_definition:
+                    type: string
+                    example: "km"
+                    description: The definition of the distance value. Metric or imperial system is enforced.
+                    enum:
+                      - km
+                      - miles
+        payments:
+          type: array
+          description: Payment methods and their event description.
+          items:
+            type: object
+            required:
+              - payment_method
+              - currency
+              - timestamp
+              - payment_amount
+              - payment_vat_amount
+            properties:
+              payment_method:
+                type: string
+                description: Type of payment method.
+                example: credit card
+                enum:
+                  - cash
+                  - credit_card
+                  - recycling_money
+                  - gift_card
+              payment_method_type:
+                type: string
+                description: Specify payment method.
+                enum:
+                  - bankaxept
+                  - visa
+              currency:
+                type: string
+                example: SEK
+                description: The currency used in this payment transaction. If it differs from the “total_currency” the conversion rate is expected to be used.
+              exchange_rate:
+                type: string
+                example: "1.1"
+                description: Exchange rate at the time of the transaction.
+              moneyback:
+                type: boolean
+                default: false
+                description: If true, this payment goes back to the associated payment method.
+              masked_pan:
+                type: string
+                example: "1234"
+                description: The last four digits of the customer's card.
+              gift_number:
+                type: string
+                example: "201712315678"
+                description: The reference number of the gift medium that has been used in the transaction.
+              timestamp:
+                type: dateTime
+                example: "2019-04-05T14:48:38+01"
+                description: Time for the receipt. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+              bank_terminal_id:
+                type: string
+                example: "12329911"
+                description: The national number of the bank terminal for the payment infrastructure.
+              national_merchant_number:
+                type: string
+                example: "324295"
+                description: The national number of the seller using this bankterminal for the payment infrastructure.
+              ref_nr:
+                type: string
+                example: "567734 443372 IA1"
+              aid_nr:
+                type: string
+                example: "D5780000021010"
+              tvr_nr:
+                type: string
+                example: "8000048000"
+              tsi_nr:
+                type: string
+                example: "6800"
+              response_code:
+                type: string
+                example: "00"
+              tip_amount:
+                type: string
+                example: "2.5"
+                description: Amount of tip in this payment.
+              payment_vat_amount:
+                type: string
+                example: "10.48"
+                description: The VAT amount of this payment.
+              payment_amount:
+                type: string
+                example: "55.14"
+                description: The total amount paid in this transaction, including VAT.
+        extra_logic:
+          type: object
+          description: Extra values that can benefit the user experience of the receipt.
+          properties:
+            receipt_bar_code:
+              type: object
+              description: The bar code to be visible on the receipt.
+              properties:
+                encoding:
+                  type: string
+                  example: "interleaved2of5"
+                  description: "What type of encoding."
+                value:
+                  type: string
+                  example: "Z1n0flmEOO"
+                  description: "Data of the barcode"
+                display_value:
+                  type: string
+                  example: "15623489202"
+                  description: "The text to be shown below"
+            receipt_qr_url:
+              type: string
+              example: api.zeipt.io/a792d637695ee43db845a8c940a3d2c1.html
+              description: The QR code to be visible on the receipt.
+            return_policy:
+              type: string
+              maxLength: 200
+              example: 30 days return
+              description: Text describing the return policy to be shown on the receipt.
+            customer_first_name:
+              type: string
+              example: John
+            customer_surname:
+              type: string
+              example: Watson
+            customer_telephone:
+              type: object
+              properties:
+                country_calling_code:
+                  type: string
+                  example: "+47"
+                number:
+                  type: string
+                  example: ""
+            seller_id:
+              type: string
+              example: "444"
+              description: The ID of the seller.
+            seller_name:
+              type: string
+              example: Sibban
+              description: The name of the seller.
+            operator_id:
+              type: string
+              example: "432"
+              description: The ID of the operator.
+            operator_name:
+              type: string
+              example: Sebastian
+              description: The name of the operator.
+            operator_text:
+              type: string
+              maxLength: 200
+              example: You have been serviced by
+              description: Operator's message to be displayed on the receipt.
+            cashier_goodbye_message:
+              type: string
+              maxLength: 200
+              example: "Thank you, come again"
+              description: Message to be displayed at the bottom of receipt. The only line allowed to be longer than 60 characters.
+            opening_hours:
+              type: string
+              maxLength: 200
+              example: "Man-Fri: 07.00-24.00 Sat-Sun: 08.00-24.00"
+              description: Opening hours of associated store.
+
+    UIReceipt:
+      type: object
+      properties:
+        reference:
+          type: object
+          description: This object contains references our system generates for the receipt. These can be used for initiating different function flows.
+          properties:
+            zeipt_receipt_v:
+              type: string
+              default: 0.97.3
+              description: The version of this Zeipt receipt format. Use it to make sure you follow the correct format.
+            zeipt_receipt_transnr:
+              type: string
+              example: mpg1W0ri6SozPklqeGjX
+              description: Unique Zeipt generated receipt number.
+            reference_of_new:
+              type: string
+              example: LIB3J4wz8Cdkskjyhlxl
+              description: If this receipt has been updated, Zeipt generates this ID to the receipt which refer to the new receipt.
+            reference_of_origin:
+              type: string
+              example: LIB3J4wz8Cdkskjyhlxx
+              description: If this is an updated receipt, this ID refer to the receipt that was updated.
+            coupons:
+              type: array
+              description: Coupons used in the transaction.
+              items:
+                type: object
+                properties:
+                  coupon_number:
+                    type: string
+                    example: Q4YHULncMT
+                    description: The reference of the coupon that has been used.
+        merchant:
+          type: object
+          description: Information about the merchant where the purchase was made.
+          properties:
+            org_number:
+              type: string
+              example: "NO915271383MVA"
+              description: The organization / VAT identification number of the merchant. (https://en.wikipedia.org/wiki/VAT_identification_number)
+            merchant_country_code:
+              type: string
+              example: NO
+              description: ISO 3166-1 alpha 2 standard.
+            purchase_location:
+              type: object
+              description: The store where the purchase was made and its location.
+              properties:
+                purchase_country_code:
+                  type: string
+                  example: "NO"
+                city:
+                  type: string
+                  example: Oslo
+                zip_code:
+                  type: string
+                  example: "0254"
+                address:
+                  type: string
+                  example: "Veien 23"
+                store_name:
+                  type: string
+                  example: "Shop&Go"
+                  description: The name of the store.
+                cashier_number:
+                  type: string
+                  example: "543"
+                  description: The identifier of the cashier.
+                store_number:
+                  type: string
+                  example: "22"
+                  description: The identifier of the store.
+            telephone:
+              type: object
+              description: The store's phone number.
+              properties:
+                country_calling_code:
+                  type: string
+                  example: "+47"
+                  description: E.123 standard. (https://en.wikipedia.org/wiki/E.123)
+                number:
+                  type: string
+                  example: "92696846"
+            email:
+              type: string
+              example: example@mail.com
+              description: The store's email address.
+            website:
+              type: string
+              example: www.example.com
+              description: The store's website.
+            travel_reference:
+              type: object
+              description: References in case of travel.
+              properties:
+                travel_driver_id:
+                  type: string
+                  example: "653"
+                  description: ID of the driver.
+                travel_driver_name:
+                  type: string
+                  example: "Jeppe Skaar"
+                  description: Name of the driver.
+                travel_driver_certification:
+                  type: string
+                  example: "FB0YCFgffW"
+                  description: The national vehicle certification number for the driver.
+                travel_company_certification:
+                  type: string
+                  example: "tlDCkIyOEZ"
+                  description: The national certification number for the company.
+                car_license_plate:
+                  type: string
+                  example: "AF46035"
+                  description: The license plate of the vehicle.
+        receipt:
+          type: object
+          description: The general reference and legal data of the receipt.
+          properties:
+            receipt_number:
+              type: string
+              example: "445768"
+              description: The receipt number set by the merchant/POS.
+            receipt_type:
+              type: string
+              description: The annotation on what type of receipt this is.
+              enum:
+                - Elektronisk salgskvittering
+                - Elektronisk returkvittering
+                - Elektronisk proforma-kvittering
+                - Elektronisk treningskvittering
+                - Elektronisk utleveringsseddel
+            timestamp:
+              type: dateTime
+              example: "2008-09-15T15:53:00+01"
+              description: Date and time for the receipt. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+        sum:
+          type: object
+          description: The final sums of the receipt. Includes discounts, recycling fees, taxes and tip. May also be money back.
+          properties:
+            total_sum_without_vat_and_substractions:
+              type: string
+              example: "40.6"
+              description: The total sum, <b>not including</b> discounts, recycling fees, tip, returns and taxes.
+            total_sum_without_vat:
+              type: string
+              example: "38.1"
+              description: The total sum <b>including</b> all discounts, recycling fees, tip and returns, <br/><b>not including</b> taxes.
+            total_vat_amount:
+              type: string
+              example: "9.53"
+              description: The total sum of the VAT.
+            total_sum:
+              type: string
+              example: "47.63"
+              description: The total sum <b>including</b> all discounts, recycling fees, tip, returns and taxes.
+            total_tip_amount:
+              type: string
+              example: "2.5"
+              description: The total sum of the tip to the operator.
+            total_currency:
+              type: string
+              example: "NOK"
+              description: The currency set by the merchant on the purchase.
+            total_vat_name:
+              type: string
+              example: MVA
+              description: The local abbreviation of the tax rate.
+            total_recycling_fee_amount:
+              type: string
+              example: "2.5"
+              description: The total recycling fee of all article objects.
+            total_discount_amount:
+              type: string
+              example: "22.5"
+              description: The total discount of all articles and global discount.
+            total_returns_amount:
+              type: string
+              example: "0"
+              description: The total amount from returns.
+
+            global_discounts:
+              type: array
+              description: Discounts on the receipt. Included in total_sum and total_sum_without_vat.
+              items:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    description: About the discount.
+                    example: "5OQjJ61DVR"
+                  amount:
+                    description: Amount of discount.
+                    type: string
+                    example: "2.5"
+                  percentage:
+                    description: Percentage of discount.
+                    type: string
+                    example: "6.2"
+
+            total_vat_amount_array:
+              type: array
+              description: Sum of the VAT rates included in the articles of this receipt.
+              items:
+                type: object
+                properties:
+                  percentage:
+                    type: string
+                    example: "25"
+                    description: VAT rate percentage.
+                  base_amount:
+                    type: string
+                    example: "38.1"
+                    description: The amount the VAT is calculated from.
+                  amount:
+                    type: string
+                    example: "9.53"
+                    description: The total amount of this VAT percentage class.
+
+            total_return_vat_amount_array:
+              type: array
+              description: Sum of the VAT rates included in the returned articles of this receipt.
+              items:
+                type: object
+                properties:
+                  percentage:
+                    type: string
+                    example: "0"
+                    description: VAT rate percentage.
+                  base_amount:
+                    type: string
+                    example: "0"
+                    description: The amount the VAT is calculated from.
+                  amount:
+                    type: string
+                    example: "0"
+                    description: The total amount of this VAT percentage class.
+
+            total_payment_method_array:
+              type: array
+              description: Sum of the payments done in this receipt.
+              items:
+                type: object
+                properties:
+                  method:
+                    type: string
+                    example: card
+                    enum:
+                      - bankaxept
+                      - cash
+                    description: Type of payment.
+                  currency:
+                    type: string
+                    example: SEK
+                    description: The currency used in this payment transaction. If it differs from the “total_currency” the conversion rate is expected to be used.
+                  amount:
+                    type: string
+                    example: "55.14"
+                    description: The total amount paid.
+
+            total_moneyback_method_array:
+              type: array
+              description: Sum of the returned payments done in this receipt.
+              items:
+                type: object
+                properties:
+                  method:
+                    type: string
+                    example: cash
+                    enum:
+                      - bankaxept
+                      - cash
+                    description: Type of payment method where money is returned.
+                  currency:
+                    type: string
+                    example: NOK
+                    description: The currency used in this payment transaction. If it differs from the “total_currency” the conversion rate is expected to be used.
+                  amount:
+                    type: string
+                    example: "0"
+                    description: The total amount paid back.
+        articles:
+          type: array
+          description: Each article in the receipt. Either sale or return.
+          items:
+            type: object
+            properties:
+              art_number:
+                type: string
+                example: "230023"
+                description: The identifier of this article.
+              art_reference_another_art:
+                type: string
+                example: ""
+              return:
+                type: boolean
+                default: false
+                description: Set this to true if the associated article described in this object is a return.
+              name:
+                type: string
+                example: "Article Name"
+              image_uri:
+                type: string
+                example: ""
+                description: Image uri for article thumbnail.
+              art_safarticlegroup_id:
+                type: string
+                example: "11"
+                description: The article group in SAFT format.
+              quantity:
+                type: string
+                example: "11.4"
+              quantity_type:
+                type: string
+                example: km
+                description: Defines the type of quantity. Metric or imperial system is enforced.
+                enum:
+                  - kg
+                  - pc
+                  - hg
+                  - st
+              quantity_price_without_vat:
+                type: string
+                example: "5.315"
+                description: Price of one article, <b>not including</b> VAT.
+              art_vat_name:
+                type: string
+                example: "MVA"
+                description: The local abbreviation of the tax rate for this article.
+              art_vat_percentage:
+                type: string
+                example: "25"
+                description: Percentage of VAT on this article.
+              art_sum_without_vat_and_substractions:
+                type: string
+                example: "60.6"
+                description: The total sum of article, <b>not including</b> discounts, recycling fees, returns and taxes.
+              art_sum_without_vat:
+                type: string
+                example: "40.6"
+                description: The total sum of article <b>including</b> all discounts, recycling fees and returns, <br/><b>not including</b> taxes.
+              art_vat_amount:
+                type: string
+                example: "10.15"
+                description: The total VAT amount of article.
+              art_sum:
+                type: string
+                example: "53.25"
+                description: The total sum of article.
+              discounts:
+                type: array
+                description: Discounts on the article
+                items:
+                  type: object
+                  properties:
+                    description:
+                      type: string
+                      description: About the discount.
+                      example: "Q4YHULncMT"
+                    amount:
+                      description: Amount of discount.
+                      type: string
+                      example: "20"
+                    percentage:
+                      description: Percentage of discount.
+                      type: string
+                      example: "33"
+
+              recycling_fee:
+                type: string
+                example: "2.5"
+                description: The total recycling fee of article.
+              manual_uri:
+                type: string
+                example: ""
+                description: Url to this article's manual.
+              warranty_uri:
+                type: string
+                example: ""
+                description: Url to this article's warranty description.
+              travel:
+                type: object
+                description: Used in case of travel to describe related lengths and references.
+                properties:
+                  car_flight_reference_id:
+                    type: string
+                    example: "rCkBHb5yUA"
+                    description: The reference id of the vehicle or flight.
+                  start_time:
+                    type: string
+                    example: "2019-04-05T14:30:23+01"
+                    description: The start time of the journey. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+                  end_time:
+                    type: string
+                    example: "2019-04-05T14:47:38+01"
+                    description: The end time of the journey. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+                  start_location:
+                    type: string
+                    example: Nedre Vollgate 3
+                    description: The start location (f.ex. address).
+                  end_location:
+                    type: string
+                    example: skallumhagen 48
+                    description: The end location (f.ex. address).
+                  distance_value:
+                    type: string
+                    example: "11.4"
+                    description: Distance of journey
+                  distance_value_definition:
+                    type: string
+                    description: The definition of the distance value. Metric or imperial system is enforced.
+                    example: km
+                    enum:
+                      - km
+                      - miles
+        payments:
+          type: array
+          description: Payment methods and their event description.
           items:
             type: object
             properties:
               payment_method:
                 type: string
-                description: What payment method has been done on this receipt.
+                description: Type of payment method.
+                example: card
+                enum:
+                  - cash
+                  - credit_card
+                  - recycling_money
+                  - gift_card
+              payment_method_type:
+                type: string
+                description: Specify payment method.
+                example: bankaxept
                 enum:
                   - bankaxept
-                  - cash
-                  - gift_medium
+                  - visa
               currency:
                 type: string
-                example: "NOK"
-                description: The currency code used for this transaction.
-              money_back:
+                example: SEK
+                description: The currency used in this payment transaction. If it differs from the “total_currency” the conversion rate is expected to be used.
+              exchange_rate:
+                type: string
+                example: "1.1"
+                description: Exchange rate at the time of the transaction.
+              moneyback:
                 type: boolean
                 default: false
-                description: If true, the money in this payment has been put back on this medium, calculating all totals to minus.
+                description: If true, this payment goes back to the associated payment method.
               masked_pan:
                 type: string
-                example: "XXX-XX-X-234F"
-                description: The check numbers/letters that are used in the transaction.
+                example: "1234"
+                description: The last four digits of the customer's card.
               gift_number:
                 type: string
                 example: "201712315678"
-                description: The reference number used on the gift medium that has been used in the transaction.
-              bax_number:
-                type: string
-                example: "123456"
-                description: Bankterminal nr.
-              national_merchant_nr:
-                type: string
-                example: "123456"
-                description: National merchant_number given by the bankterminal.
-              bankterminal_string:
-                type: string
-                example: "123456"
-                description: The string from the payment terminal that is sent directly to the printer if the cashier do not handle it on before hand.
-              date:
-                type: string
-                example: "12/05/18"
-                description: Date used by the bankterminal or other external units for the transaction (reporting back to the POS for the transaction).
+                description: The reference number of the gift medium that has been used in the transaction.
               timestamp:
+                type: dateTime
+                description: Time of transaction. ISO 8601 format (YYYY-MM-DDThh:mm:ss±hh).
+                example: "2019-04-05T14:48:38+01"
+              bank_terminal_id:
                 type: string
-                example: "12:20"
-                description: The time of transaction, set by the bankterminal/other external units when reporting to the POS.
+                example: "12329911"
+                description: The national number of the bank terminal for the payment infrastructure.
+              national_merchant_number:
+                type: string
+                example: "324295"
+                description: The national number of the seller using this bankterminal for the payment infrastructure.
               ref_nr:
                 type: string
-                example: 01129955131
-                description: National reference number when the transaction is done digitally.
+                example: "567734 443372 IA1"
               aid_nr:
                 type: string
-                example: "315041592E5359532E4444463031"
-                description: Application Identifier. The identifier of the card scheme, received from the card chip.
+                example: "D5780000021010"
               tvr_nr:
                 type: string
-                example: "0000000000000000000000000000000000000000"
-                description: Terminal Verification Results.
+                example: "8000048000"
               tsi_nr:
                 type: string
-                example: "0000000000000000000000000000000000000000"
-                description: Transaction Status Indicator.
+                example: "6800"
               response_code:
                 type: string
-                example: "OK"
-                description: The accepted response from the terminal.
+                example: "00"
+              tip_amount:
+                type: string
+                example: "2.5"
+                description: Amount of tip in this payment.
+              payment_vat_amount:
+                type: string
+                example: "10.48"
+                description: The VAT amount of this payment.
               payment_amount:
-                type: double
-                example: 10.00
-                description: The final payment amount spent in this transaction.
+                type: string
+                example: "55.14"
+                description: The total amount paid in this transaction, including VAT.
         extra_logic:
           type: object
           description: Extra values that can benefit the user experience of the receipt.
           properties:
-            pos_qr_code:
+            receipt_bar_code:
+              type: object
+              description: The bar code to be visible on the receipt.
+              properties:
+                encoding:
+                  type: string
+                  example: "interleaved2of5"
+                  description: "What type of encoding."
+                value:
+                  type: string
+                  example: "Z1n0flmEOO"
+                  description: "Data of the barcode"
+                display_value:
+                  type: string
+                  example: "15623489202"
+                  description: "The text to be shown below"
+            receipt_qr_url:
               type: string
-              example: "d792d637695ee43db845a8c940a3d2c1"
-              description: The QR value for user interface to calculate.
-            pos_qr_code_version:
+              example: "api.zeipt.io/a792d637695ee43db845a8c940a3d2c1.html"
+            logo_uri:
               type: string
-              example: "1.2"
-              description: The version of the QR code.
-            pos_bar_code:
+              example: ""
+              description: URL to the logo of the merchant
+            return_policy:
               type: string
-              example: "d792d637695ee43db845a8c940a3d2c1"
-              description: The bar code value for user interface to calculate.
+              maxLength: 200
+              example: 30 days return
+              description: Text describing the return policy to be shown on the receipt.
+            customer_first_name:
+              type: string
+              example: John
+            customer_surname:
+              type: string
+              example: Watson
+            customer_telephone:
+              type: object
+              properties:
+                country_calling_code:
+                  type: string
+                  example: "+47"
+                number:
+                  type: string
+                  example: ""
             seller_id:
               type: string
               example: "444"
-              description: The sellers id.
+              description: The ID of the seller.
             seller_name:
               type: string
-              example: "Sibban"
-              description: The sellers name.
-            employee_id:
+              example: Sibban
+              description: The name of the seller.
+            operator_id:
               type: string
               example: "432"
-              description: The employee ID created by the POS for this login.
-            employee_name:
+              description: The ID of the operator.
+            operator_name:
               type: string
-              example: "Sebastian"
-              description: The employee name created by the POS for this login.
-            employee_text:
+              example: Sebastian
+              description: The name of the operator.
+            operator_text:
               type: string
               maxLength: 200
-              example: "You have been serviced by"
-              description: The text that is to be displayed on the receipt before the name.
-            pos_goodbye_message:
+              example: You have been serviced by
+              description: Operator's message to be displayed on the receipt.
+            cashier_goodbye_message:
               type: string
               maxLength: 200
               example: "Thank you, come again"
-              description: The message the Operating Merchant might want to add to the view of the receipt.
-        updates:
-          type: array
-          description: Any updates made on this receipt.
-          items:
-            type: object
-            properties:
-              update_time:
-                type: dateTime
-                example: "2018-09-14T13:36:43Z"
-                description: Timestamp for update
-              version:
-                type: integer
-                example: 1
-                description: Current or previous version nr.
+              description: Message to be displayed at the bottom of receipt. The only line allowed to be longer than 60 characters.
+            opening_hours:
+              type: string
+              maxLength: 200
+              example: "Man-Fri: 07.00-24.00 Sat-Sun: 08.00-24.00"
+              description: Opening hours of associated store.
 
-    # PET EXAMPLE
-    Pet:
-      type: object
-      required:
-        - name
-        - photoUrls
-      properties:
-        name:
-          description: The name given to a pet
-          type: string
-          example: Guru
-        photoUrls:
-          description: The list of URL to a cute photos featuring pet
-          type: array
-          xml:
-            name: photoUrl
-            wrapped: true
-          items:
-            type: string
-            format: url
+  securitySchemes:
+    Auth_token:
+      description: |
+        Request API key:
+        sebastian@zeipt.com
+      type: apiKey
+      in: header
+      name: auth_token
 
-        status:
-          type: string
-          description: Pet status in the store
-          enum:
-            - available
-            - pending
-            - sold
-        petType:
-          description: Type of a pet
-          type: string
-      xml:
-        name: Pet
-    # PET
+security:
+  - Auth_token: []
